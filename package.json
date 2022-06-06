@@ -1,0 +1,19 @@
+{
+  "name": "small-improvements-slack-bot",
+  "version": "1.0.0",
+  "description": "Slack bot for integration with Small Improvements API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourceallies/small-improvements-slack-bot.git"
+  },
+  "author": "Reece Appling, Joe Danks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sourceallies/small-improvements-slack-bot/issues"
+  },
+  "homepage": "https://github.com/sourceallies/small-improvements-slack-bot#readme"
+}
