@@ -62,6 +62,8 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
 
 # https://github.com/terraform-aws-modules/terraform-aws-eventbridge/blob/v1.14.0/examples/with-lambda-scheduling/main.tf
 
+# https://stackoverflow.com/questions/64008302/question-re-terraform-and-github-actions-secrets
+
 data "archive_file" "zip_the_node_code" {
     type = "zip"
     source_dir  = "${path.module}/python/"
