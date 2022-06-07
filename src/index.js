@@ -5,12 +5,21 @@ const AWS = require('aws-sdk');//AWS SDK for DynamoDB
 const docClient = new AWS.DynamoDB.DocumentClient();
 // Put lambda function in here :)
 
-const options = {
+const httpsOptions = {
     hostname: 'allies.small-improvements.com',
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
 };
+
+const dynamoParams = {
+    TableName : 'your-table-name',
+    /* Item properties will depend on your application concerns */
+    Item: {
+       id: '12345',
+       price: 100.00
+    }
+}
 
 exports.handler = (event, context, callback) => {
     let rightNow = new Date(event.time);
@@ -21,7 +30,7 @@ exports.handler = (event, context, callback) => {
 };
 
 function getObjectives(earliest){
-    const req = https.request(options, res => {
+    const req = https.request(httpsOptions, res => {
         console.log(`statusCode: ${res.statusCode}`);
       
         res.on('data', d => {
