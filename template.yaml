@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Need to write a better description
+Resources:
+##########################################################################
+#   Lambda Function                                                      #
+##########################################################################
+  LambdaForDynamoDB:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 300
+      Environment:
+        Variables:
+          DatabaseTable: !Ref DynamoTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTable
+
+        
+##########################################################################
+#   DynamoDB                                                            #
+##########################################################################
+  DynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: "ID"
+        AttributeType: "S"
+      - AttributeName: "LastUpdated"
+        AttributeType: "N"
+      KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 5
+  
