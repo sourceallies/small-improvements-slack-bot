@@ -1,8 +1,8 @@
 'use strict';
 
 const https = require('https');//Axios for http requests
-//const AWS = require('aws-sdk');//AWS SDK for DynamoDB
-//const docClient = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');//AWS SDK for DynamoDB
+const docClient = new AWS.DynamoDB.DocumentClient();
 // Put lambda function in here :)
 
 const httpsOptions = {
@@ -10,6 +10,9 @@ const httpsOptions = {
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
+    headers: {
+        Authorization: 'Bearer '+process.env.SIToken
+    }
 };
 
 const dynamoParams = {
@@ -31,9 +34,9 @@ function getObjectives(earliest){
         const req = https.request(httpsOptions, res => {
             var toReturn = "";
             if(res.statusCode != 200&&res.statusCode != 307){
-                reject("Status code received: "+res.statusCode);
+                reject(res.statusCode);
             }
-            res.on('data', d => {
+            res.on('data', d => { //Concat new string onto old string, is this necessary? Can data be paginated?
                 toReturn.concat(d);
             });
             res.on('close',()=>{

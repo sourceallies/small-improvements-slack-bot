@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Need to write a better description
+Parameters:
+  SIToken:
+    Type: String
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
@@ -14,6 +17,7 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
+          SIToken: ${SIToken}
           DatabaseTable: !Ref DynamoTable
       Policies:
         - DynamoDBCrudPolicy:
@@ -22,7 +26,7 @@ Resources:
         CWSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'rate(1 minute)'
+            Schedule: 'rate(1 minute)' # this should be 12 hours for prod
             Name: TestSchedule
             Description: test schedule
             Enabled: true
