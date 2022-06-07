@@ -1,8 +1,8 @@
 'use strict';
 
 const https = require('https');//Axios for http requests
-const AWS = require('aws-sdk');//AWS SDK for DynamoDB
-const docClient = new AWS.DynamoDB.DocumentClient();
+//const AWS = require('aws-sdk');//AWS SDK for DynamoDB
+//const docClient = new AWS.DynamoDB.DocumentClient();
 // Put lambda function in here :)
 
 const httpsOptions = {
@@ -13,36 +13,40 @@ const httpsOptions = {
 };
 
 const dynamoParams = {
-    TableName : 'your-table-name',
-    /* Item properties will depend on your application concerns */
+    TableName : "small-improvements-goals",
+    /* Item properties will depend on your application concerns 
     Item: {
        id: '12345',
        price: 100.00
     }
+    */
 }
 
-exports.handler = (event, context, callback) => {
-    let rightNow = new Date(event.time);
-    let earliestTime = rightNow - (1000*60*12);
-    getObjectives(earliestTime);
-    //console.log('Received event:', JSON.stringify(event, null, 2));
-    //callback(null, 'Finished');
-};
+
+
+
 
 function getObjectives(earliest){
-    const req = https.request(httpsOptions, res => {
-        console.log(`statusCode: ${res.statusCode}`);
-      
-        res.on('data', d => {
-          process.stdout.write(d);
+    return new Promise((accept,reject)=>{
+        const req = https.request(httpsOptions, res => {
+            var toReturn = "";
+            if(res.statusCode != 200&&res.statusCode != 307){
+                reject("Status code received: "+res.statusCode);
+            }
+            res.on('data', d => {
+                toReturn.concat(d);
+            });
+            res.on('close',()=>{
+                accept(JSON.parse(toReturn));
+            });
         });
+        req.on('error', error => {
+            reject(error);
+        });
+        req.write("data");
+        req.end();
     });
-    req.on('error', error => {
-        console.error(error);
-    });
-      
-    req.write("data");
-    req.end();
+    
 }
 
 function workWithDatabase(){
@@ -50,8 +54,25 @@ function workWithDatabase(){
 }
 
 function postToSlack(posts){//posts are an array
-
+    for(var i=0;i<posts.length;i++){
+        //--------------------------------------------------
+    }
 }
+
+async function main(event,context,callback){
+    let rightNow = new Date(event.time);
+    let earliestTime = rightNow - (1000*60*12);
+    getObjectives(earliestTime).then((objectivesJSON)=>{
+        
+    },(httpErr)=>{
+        console.log(httpErr);
+    });
+    //console.log('Received event:', JSON.stringify(event, null, 2));
+    //callback(null, 'Finished');
+}
+
+exports.handler = main;
+exports.main = main;
 
 // schedule with cloudwatch rule -> cron(0 */12 * * *);
 

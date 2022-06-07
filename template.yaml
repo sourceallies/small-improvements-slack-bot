@@ -35,6 +35,7 @@ Resources:
   DynamoTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: small-improvements-goals
       AttributeDefinitions:
       - AttributeName: "ID"
         AttributeType: "S"

@@ -1,0 +1,54 @@
+name: Deployment
+
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+env:
+  JOBS_OS: ubuntu-latest
+
+jobs:
+  #build:
+  #  name: Build
+  #  runs-on: $JOBS_OS
+  #  steps:
+      #- uses: actions/checkout@v2
+      #- name: yaml-lint
+      #  uses: ibiqlik/action-yamllint@v3
+
+
+  deploy:
+    name: Deploy
+    runs-on: $JOBS_OS
+    steps:
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+
+      - uses: aws-actions/setup-sam@v2
+
+      - uses: aws-actions/configure-aws-credentials@v1
+
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      # sam build
+      - run: sam build --use-container
+      # Run unit tests here
+      # -----------------------
+      # sam deploy
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
