@@ -4,7 +4,7 @@ Description: Need to write a better description
 Parameters:
   SIToken:
     Type: String
-    Default: 'a really obviously incorrect string'
+    # Default: 'a really obviously incorrect string'
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
