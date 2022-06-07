@@ -53,4 +53,4 @@ jobs:
       # Run unit tests here
       # -----------------------
       # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset —-parameter-overrides SIToken=${{secret.SMALL_IMPROVEMENTS_TOKEN}}
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset —-parameter-overrides SIToken=${{ secrets.SMALL_IMPROVEMENTS_TOKEN }}
