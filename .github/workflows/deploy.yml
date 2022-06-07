@@ -14,14 +14,14 @@ permissions:
   packages: write
 
 env:
-  JOBS_OS: ubuntu-latest
+  JOBS_OS: "ubuntu-latest"
 
 
 
 jobs:
   #build:
   #  name: Build
-  #  runs-on: ${{ env.JOBS_OS }}
+  #  runs-on: $JOBS_OS"ubuntu-latest"
   #  steps:
       #- uses: actions/checkout@v2
       #- name: yaml-lint
@@ -30,7 +30,7 @@ jobs:
 
   deploy:
     name: Deploy
-    runs-on: ${{ env.JOBS_OS }}
+    runs-on: "ubuntu-latest"
     steps:
       - name: Install Node 16
         uses: actions/setup-node@v3
