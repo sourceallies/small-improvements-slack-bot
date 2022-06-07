@@ -12,7 +12,7 @@ permissions:
   id-token: write
   contents: read
   packages: write
-  
+
 jobs:
   #build:
   #  name: Build
@@ -38,11 +38,12 @@ jobs:
 
       - uses: aws-actions/setup-sam@v2
 
-      - uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+          role-to-assume: ${{ secrets.DEV_ROLE_ARN }}
+          role-session-name: DeployToProd
       # sam build
       - run: sam build --use-container
       # Run unit tests here
