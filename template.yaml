@@ -49,6 +49,8 @@ Resources:
       KeySchema:
       - AttributeName: ID
         KeyType: HASH
+      - AttributeName: time
+        KeyType: 'N'
       BillingMode: PROVISIONED
       ProvisionedThroughput:
         ReadCapacityUnits: 10
