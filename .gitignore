@@ -1,5 +1,7 @@
 # Custom
 .git
+test.json
+.DS_Store
 
 # Logs
 logs

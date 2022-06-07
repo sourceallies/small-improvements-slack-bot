@@ -18,6 +18,15 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DynamoTable
+      Events:
+        CWSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: 'rate(1 minute)'
+            Name: TestSchedule
+            Description: test schedule
+            Enabled: true
+
 
         
 ##########################################################################
