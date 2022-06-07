@@ -17,7 +17,7 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
-          SIToken: ${SIToken}
+          SIToken: !Ref SIToken
           DatabaseTable: !Ref DynamoTable
       Policies:
         - DynamoDBCrudPolicy:
