@@ -1,9 +1,16 @@
-const axios = require('axios');//Axios for http requests
+'use strict';
+
+const https = require('https');//Axios for http requests
 const AWS = require('aws-sdk');//AWS SDK for DynamoDB
 const docClient = new AWS.DynamoDB.DocumentClient();
 // Put lambda function in here :)
 
-'use strict';
+const options = {
+    hostname: 'allies.small-improvements.com',
+    port: 443,
+    path: '/api/v2/activities?modules=OBJECTIVE',
+    method: 'GET',
+};
 
 exports.handler = (event, context, callback) => {
     let rightNow = new Date(event.time);
@@ -14,12 +21,19 @@ exports.handler = (event, context, callback) => {
 };
 
 function getObjectives(earliest){
-    axios.get('https://allies.small-improvements.com/api/v2/activities?modules=OBJECTIVE').then(res => {
-        console.log(`statusCode: ${res.status}`);
-        console.log(res);
-    }).catch(error => {
+    const req = https.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`);
+      
+        res.on('data', d => {
+          process.stdout.write(d);
+        });
+    });
+    req.on('error', error => {
         console.error(error);
     });
+      
+    req.write("data");
+    req.end();
 }
 
 function workWithDatabase(){
