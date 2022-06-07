@@ -14,7 +14,7 @@ exports.handler = (event, context, callback) => {
 };
 
 function getObjectives(earliest){
-    axios.get('https://example.com/todos').then(res => {
+    axios.get('https://allies.small-improvements.com/api/v2/activities?modules=OBJECTIVE').then(res => {
         console.log(`statusCode: ${res.status}`);
         console.log(res);
     }).catch(error => {
