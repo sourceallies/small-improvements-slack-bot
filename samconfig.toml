@@ -1,0 +1,12 @@
+version=0.1
+[default.global.parameters]
+stack_name = "small-improvements-bot-stack"
+
+[default.deploy.parameters]
+stack_name = "small-improvements-bot-stack"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+
+[default.build.parameters]
+no_beta_features = true
