@@ -78,8 +78,10 @@ function getObjectives(opts){
         req.on('error', err => {
             reject(`https error: ${err}`);
         });
-        req.write("data");
+        
+        //req.write("data");//---------------------------
         req.end();
+        //console.log(req);
     });
     
 }
@@ -104,7 +106,8 @@ async function main(event,context,callback){
         let SIToken = secrets.SIToken;
         httpsOptions.headers = {
             Authorization: `Bearer ${SIToken}`,
-            Accept: `application/json`
+            Accept: `application/json`,
+            'User-Agent': 'SIBot' /*IF YOU REMOVE THIS LINE I WILL BREAK*/
         };
         let slackToken = secrets.SlackToken;
         let objectives = await getObjectives(httpsOptions);

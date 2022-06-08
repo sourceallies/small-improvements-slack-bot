@@ -24,10 +24,10 @@ Resources:
         CWSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'rate(2 minutes)' # this should be 12 hours for prod
+            Schedule: 'rate(12 hours)' # this should be 12 hours for prod
             Name: TestSchedule
             Description: test schedule
-            Enabled: true
+            Enabled: false # Needs to be true in prod
 
 
         
