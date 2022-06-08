@@ -17,13 +17,13 @@ var client = new AWS.SecretsManager({
 function getSecret(secretName){
     return new Promise((accept,reject)=>{
         client.getSecretValue({SecretId: secretName}, function(err, data) {
-            if(err){reject(["Could not get Secret: ",err]);}
+            if(err){
+                reject(`Could not get Secret: ${err.code}`);
+            }
             else{
                 // Decrypts secret using the associated KMS key.
                 // Depending on whether the secret is a string or binary, one of these fields will be populated.
-                if('SecretString' in data){
-                    accept(data.SecretString);
-                }
+                if('SecretString' in data){accept(data.SecretString);}
                 else{
                     let buff = new Buffer(data.SecretBinary, 'base64');
                     accept(buff.toString('ascii'));
@@ -65,7 +65,7 @@ function getObjectives(){
         const req = https.request(httpsOptions, res => {
             var toReturn = "";
             if(res.statusCode != 200&&res.statusCode != 307){
-                reject(["Could not get objectives: ",res.statusCode]);
+                reject(`Could not get objectives: ${res.statusCode}`);
             }
             res.on('data', d => { //Concat new string onto old string, is this necessary? Can data be paginated?
                 toReturn.concat(d);
@@ -94,10 +94,10 @@ function postToSlack(posts){//posts are an array
 }
 
 async function main(event,context,callback){
+    var secrets, SIToken, objectives, slackToken;
     let rightNow = new Date(event.time);
     let earliestTime = rightNow - (1000*60*12);
     let tryDB = false;
-    var secrets, SIToken, objectives, slackToken;
     try{
         let secrets = await getSecret(secretName);
         let SIToken = secrets.SIBot;
