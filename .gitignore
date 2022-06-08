@@ -2,6 +2,7 @@
 .git
 test.json
 .DS_Store
+notCommitted.js
 
 # Logs
 logs
