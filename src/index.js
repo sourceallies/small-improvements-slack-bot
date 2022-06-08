@@ -8,7 +8,10 @@ var AWS = require('aws-sdk'),
     secret,
     decodedBinarySecret;
 // Create DynamoDB document client
-const docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+const docClient = new AWS.DynamoDB.DocumentClient({
+    apiVersion: '2012-08-10',
+    region: region
+});
 // Create a Secrets Manager client
 var client = new AWS.SecretsManager({
     region: region
@@ -49,8 +52,7 @@ var httpsOptions = {
 };
 
 var dynamoParams = {
-    TableName : "small-improvements-goals", //As found in template.yaml
-    FilterExpression : `ID = :id`
+    TableName : "small-improvements-goals" //As found in template.yaml
 }
 
 
@@ -121,17 +123,56 @@ async function main(event,context,callback){
         for(var i=0;i<objectives.length;i++){
             ids.push(objectives[i].content.objectives.id);
         }
-        dynamoParams.scanFilter = ids;
-        docClient.scan(dynamoParams,function(err, data) {
-            if (err) console.log(err);
-            else console.log(data);
+        //Get All DB Entries
+        let dbEntries = await scanTable();
+        var dbIDs = dbEntries.map(entry=>entry.ID); //Is now just an array of ID's
+        let newEntries = [];
+        ids.forEach(entry=>{
+            if(!dbIDs.includes(entry)){
+                newEntries.push(entry);
+            }
         });
-        //docClient;
-        //Get All DB Entries ---------------------------------------------------------------
+        //-----------------Push all updates to slack
+        //-----------------Loop through new entries, put them in DB
+        
+        
+
     }
     //console.log('Received event:', JSON.stringify(event, null, 2));
     //callback(null, 'Finished');
 }
+
+const dbQuery = async (pid)=>{
+    const paramss = {
+        TableName: dynamoParams.TableName,
+        region: 'us-east-1'
+    };
+
+    let toOut = await docClient.query(paramss).promise();
+    return toOut;
+};
+
+const putItem = async (pid)=>{
+    const paramss = {
+        TableName: dynamoParams.TableName,
+        region: 'us-east-1'
+    };
+};
+
+const scanTable = async () => {
+    const paramss = {
+        TableName: dynamoParams.TableName,
+        region: 'us-east-1'
+    };
+    const scanResults = [];
+    var itemss;
+    do{
+        itemss =  await docClient.scan(paramss).promise();
+        itemss.Items.forEach((item) => scanResults.push(item));
+        paramss.ExclusiveStartKey  = itemss.LastEvaluatedKey;
+    }while(typeof itemss.LastEvaluatedKey !== "undefined");
+    return scanResults;
+};
 
 exports.handler = main;
 exports.main = main;
