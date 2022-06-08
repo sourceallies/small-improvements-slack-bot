@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sourceallies/small-improvements-slack-bot/issues"
   },
-  "homepage": "https://github.com/sourceallies/small-improvements-slack-bot#readme"
+  "homepage": "https://github.com/sourceallies/small-improvements-slack-bot#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1150.0"
+  }
 }
