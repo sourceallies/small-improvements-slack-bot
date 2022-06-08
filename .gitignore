@@ -3,6 +3,7 @@
 test.json
 .DS_Store
 notCommitted.js
+testData.json
 
 # Logs
 logs

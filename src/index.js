@@ -15,6 +15,8 @@ var client = new AWS.SecretsManager({
     region: region
 });
 
+var data;
+
 
 function getSecret(secretName){
     return new Promise((accept,reject)=>{
@@ -41,6 +43,10 @@ var httpsOptions = {
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
+    headers: {
+        Accept: `application/json`,
+        'User-Agent': 'SIBot' /*IF YOU REMOVE THIS LINE I WILL BREAK*/
+    }
 };
 
 const dynamoParams = {
@@ -66,24 +72,29 @@ function getObjectives(opts){
                 reject(`Could not get objectives: ${res.statusCode}`);
                 return;
             }
-            res.on('data', d => { //Concat new string onto old string, is this necessary? Can data be paginated?
+            res.on('data', d => { //Concat new string onto old string
                 toReturn += d;
             });
             res.on('close',()=>{
-                console.log('RETRIEVED===============================');
-                console.log(toReturn);
-                accept(JSON.parse(toReturn));
+                accept(formatJSON(JSON.parse(toReturn)));
             });
         });
         req.on('error', err => {
             reject(`https error: ${err}`);
         });
-        
-        //req.write("data");//---------------------------
         req.end();
-        //console.log(req);
     });
     
+}
+
+function formatJSON(json){
+    let toOut = json;
+    toOut.items.flatMap(i => i.items)
+    .flatMap(i => i.activities)
+    .filter(a => a.type === "OBJECTIVE_STATUS_CHANGED")
+    .filter(a => a.change.newStatus.status === 100 || a.change.newStatus.status === 103)
+    .filter(a => a.content.objective.visibility === "PUBLIC")
+    return toOut.items;
 }
 
 async function getDatabase(){
@@ -104,13 +115,10 @@ async function main(event,context,callback){
     try{
         let secrets = await getSecret(secretName);
         let SIToken = secrets.SIToken;
-        httpsOptions.headers = {
-            Authorization: `Bearer ${SIToken}`,
-            Accept: `application/json`,
-            'User-Agent': 'SIBot' /*IF YOU REMOVE THIS LINE I WILL BREAK*/
-        };
+        httpsOptions.headers.Authorization = `Bearer ${SIToken}`;
         let slackToken = secrets.SlackToken;
         let objectives = await getObjectives(httpsOptions);
+        objectives = objectives.items;
         tryDB = true;
     }catch(err){console.log(err);}
     if(tryDB){
