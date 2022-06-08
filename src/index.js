@@ -1,7 +1,6 @@
 'use strict';
 
 const https = require('https');
-const { rawListeners } = require('process');
 // Load the AWS SDK
 var AWS = require('aws-sdk'),
     region = "us-east-1",
@@ -9,13 +8,13 @@ var AWS = require('aws-sdk'),
     secret,
     decodedBinarySecret;
 // Create DynamoDB document client
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 // Create a Secrets Manager client
 var client = new AWS.SecretsManager({
     region: region
 });
 
-var data;
+const screeningHours = 24*30;
 
 
 function getSecret(secretName){
@@ -49,14 +48,9 @@ var httpsOptions = {
     }
 };
 
-const dynamoParams = {
-    TableName : "small-improvements-goals",
-    /* Item properties will depend on your application concerns 
-    Item: {
-       id: '12345',
-       price: 100.00
-    }
-    */
+var dynamoParams = {
+    TableName : "small-improvements-goals", //As found in template.yaml
+    FilterExpression : `ID = :id`
 }
 
 
@@ -88,13 +82,13 @@ function getObjectives(opts){
 }
 
 function formatJSON(json){
-    let toOut = json;
-    toOut.items.flatMap(i => i.items)
+    let now = new Date();
+    return json.items.flatMap(i => i.items)
     .flatMap(i => i.activities)
     .filter(a => a.type === "OBJECTIVE_STATUS_CHANGED")
     .filter(a => a.change.newStatus.status === 100 || a.change.newStatus.status === 103)
     .filter(a => a.content.objective.visibility === "PUBLIC")
-    return toOut.items;
+    .filter(a => a.occurredAt >= now-(screeningHours*3660*1000));
 }
 
 async function getDatabase(){
@@ -119,11 +113,21 @@ async function main(event,context,callback){
         let slackToken = secrets.SlackToken;
         let objectives = await getObjectives(httpsOptions);
         objectives = objectives.items;
-        tryDB = true;
+        if(objectives.length>0){tryDB = true;}
     }catch(err){console.log(err);}
     if(tryDB){
-        console.log(objectives);//----------------------------------------
-        // Try to get DB entries
+        //Get list of eligible ids
+        let ids = [];
+        for(var i=0;i<objectives.length;i++){
+            ids.push(objectives[i].content.objectives.id);
+        }
+        dynamoParams.scanFilter = ids;
+        docClient.scan(dynamoParams,function(err, data) {
+            if (err) console.log(err);
+            else console.log(data);
+        });
+        //docClient;
+        //Get All DB Entries ---------------------------------------------------------------
     }
     //console.log('Received event:', JSON.stringify(event, null, 2));
     //callback(null, 'Finished');
