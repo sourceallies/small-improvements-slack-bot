@@ -38,11 +38,10 @@ function getSecret(secretName){
 
 
 var httpsOptions = {
-    hostname: 'allies.small-improvements.com',
+    hostname: 'https://allies.small-improvements.com',
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
-    
 };
 
 const dynamoParams = {
@@ -59,15 +58,15 @@ const dynamoParams = {
 
 
 
-function getObjectives(){
+function getObjectives(opts){
     return new Promise((accept,reject)=>{
-        const req = https.request(httpsOptions, res => {
+        const req = https.request(opts, res => {
             var toReturn = "";
             if(res.statusCode != 200&&res.statusCode != 307){
                 reject(`Could not get objectives: ${res.statusCode}`);
             }
             res.on('data', d => { //Concat new string onto old string, is this necessary? Can data be paginated?
-                toReturn.concat(d);
+                toReturn += d;
             });
             res.on('close',()=>{
                 accept(JSON.parse(toReturn));
@@ -102,7 +101,7 @@ async function main(event,context,callback){
         let SIToken = secrets.SIToken;
         httpsOptions.headers = {Authorization: `Bearer ${SIToken}`};
         let slackToken = secrets.SlackToken;
-        let objectives = await getObjectives();
+        let objectives = await getObjectives(httpsOptions);
         tryDB = true;
     }catch(err){console.log(err);}
     if(tryDB){
@@ -115,6 +114,7 @@ async function main(event,context,callback){
 
 exports.handler = main;
 exports.main = main;
+exports.getObjectives = getObjectives;
 
 // schedule with cloudwatch rule -> cron(0 */12 * * *);
 
