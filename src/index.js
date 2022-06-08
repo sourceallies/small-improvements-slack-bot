@@ -14,6 +14,7 @@ var client = new AWS.SecretsManager({
     region: region
 });
 
+
 function getSecret(secretName){
     return new Promise((accept,reject)=>{
         client.getSecretValue({SecretId: secretName}, function(err, data) {
@@ -42,7 +43,7 @@ var httpsOptions = {
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
     headers: {
-        Authorization: 'Bearer '+process.env.SIToken
+        Authorization: 'Bearer '
     }
 };
 
@@ -75,7 +76,7 @@ function getObjectives(){
             });
         });
         req.on('error', error => {
-            reject(error);
+            reject(`https error: ${error}`);
         });
         req.write("data");
         req.end();
@@ -101,10 +102,11 @@ async function main(event,context,callback){
     try{
         let secrets = await getSecret(secretName);
         let SIToken = secrets.SIBot;
+        httpsOptions.headers.Authorization += SIToken;
         let slackToken = secrets.SIBot;
         let objectives = await getObjectives();
         tryDB = true;
-    }catch(err){console.log("Error with tokens or objectives",err);}
+    }catch(err){console.log(err);}
     if(tryDB){
         console.log(objectives);//----------------------------------------
         // Try to get DB entries
