@@ -4,7 +4,7 @@ const https = require('https');
 // Load the AWS SDK
 var AWS = require('aws-sdk'),
     region = "us-east-1",
-    secretName = "SIBot-Tokens",/* Slack bot token */
+    secretName = "arn:aws:secretsmanager:us-east-1:729161019481:secret:SIBot-Tokens-J4t6Af",/* API Tokens */
     secret,
     decodedBinarySecret;
 // Create DynamoDB document client
