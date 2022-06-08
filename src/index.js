@@ -17,7 +17,7 @@ var client = new AWS.SecretsManager({
 function getSecret(secretName){
     return new Promise((accept,reject)=>{
         client.getSecretValue({SecretId: secretName}, function(err, data) {
-            if(err){reject("Could not get Secret: ",err.code);}
+            if(err){reject(["Could not get Secret: ",err]);}
             else{
                 // Decrypts secret using the associated KMS key.
                 // Depending on whether the secret is a string or binary, one of these fields will be populated.
@@ -65,7 +65,7 @@ function getObjectives(){
         const req = https.request(httpsOptions, res => {
             var toReturn = "";
             if(res.statusCode != 200&&res.statusCode != 307){
-                reject("Could not get objectives: ",res.statusCode);
+                reject(["Could not get objectives: ",res.statusCode]);
             }
             res.on('data', d => { //Concat new string onto old string, is this necessary? Can data be paginated?
                 toReturn.concat(d);
