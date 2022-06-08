@@ -42,9 +42,7 @@ var httpsOptions = {
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
     method: 'GET',
-    headers: {
-        Authorization: 'Bearer '
-    }
+    
 };
 
 const dynamoParams = {
@@ -101,9 +99,9 @@ async function main(event,context,callback){
     let tryDB = false;
     try{
         let secrets = await getSecret(secretName);
-        let SIToken = secrets.SIBot;
-        httpsOptions.headers.Authorization += SIToken;
-        let slackToken = secrets.SIBot;
+        let SIToken = secrets.SIToken;
+        httpsOptions.headers = {Authorization: `Bearer ${SIToken}`};
+        let slackToken = secrets.SlackToken;
         let objectives = await getObjectives();
         tryDB = true;
     }catch(err){console.log(err);}
