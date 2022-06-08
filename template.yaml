@@ -1,10 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Need to write a better description
-Parameters:
-  SIToken:
-    Type: String
-    Default: 'a really obviously incorrect string'
+#Parameters:
+#  SIToken:
+#    Type: String
+#    Default: 'a really obviously incorrect string'
+#    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/dynamic-references.html
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
@@ -18,7 +19,7 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
-          SIToken: !Ref SIToken
+        #  SIToken: !Ref SIToken
           DatabaseTable: !Ref DynamoTable
       Policies:
         - DynamoDBCrudPolicy:

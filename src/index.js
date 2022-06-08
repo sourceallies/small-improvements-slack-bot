@@ -1,11 +1,42 @@
 'use strict';
 
-const https = require('https');//Axios for http requests
-const AWS = require('aws-sdk');//AWS SDK for DynamoDB
+const https = require('https');
+// Load the AWS SDK
+var AWS = require('aws-sdk'),
+    region = "us-east-1",
+    secretName = "SIBot-Tokens",/* Slack bot token */
+    secret,
+    decodedBinarySecret;
+// Create DynamoDB document client
 const docClient = new AWS.DynamoDB.DocumentClient();
-// Put lambda function in here :)
+// Create a Secrets Manager client
+var client = new AWS.SecretsManager({
+    region: region
+});
 
-const httpsOptions = {
+function getSecret(secretName){
+    return new Promise((accept,reject)=>{
+        client.getSecretValue({SecretId: secretName}, function(err, data) {
+            if(err){reject(err.code);}
+            else{
+                // Decrypts secret using the associated KMS key.
+                // Depending on whether the secret is a string or binary, one of these fields will be populated.
+                if('SecretString' in data){
+                    accept(data.SecretString);
+                }
+                else{
+                    let buff = new Buffer(data.SecretBinary, 'base64');
+                    accept(buff.toString('ascii'));
+                }
+            }
+        });
+    });
+}
+
+
+
+
+var httpsOptions = {
     hostname: 'allies.small-improvements.com',
     port: 443,
     path: '/api/v2/activities?modules=OBJECTIVE',
@@ -29,7 +60,7 @@ const dynamoParams = {
 
 
 
-function getObjectives(earliest){
+function getObjectives(){
     return new Promise((accept,reject)=>{
         const req = https.request(httpsOptions, res => {
             var toReturn = "";
@@ -52,7 +83,7 @@ function getObjectives(earliest){
     
 }
 
-function workWithDatabase(){
+async function getDatabase(){
     //pull whole database?
 }
 
@@ -65,11 +96,19 @@ function postToSlack(posts){//posts are an array
 async function main(event,context,callback){
     let rightNow = new Date(event.time);
     let earliestTime = rightNow - (1000*60*12);
-    getObjectives(earliestTime).then((objectivesJSON)=>{
-        
-    },(httpErr)=>{
-        console.log(httpErr);
-    });
+    let tryDB = false;
+    var secrets, SIToken, objectives, slackToken;
+    try{
+        let secrets = await getSecret(secretName);
+        let SIToken = secrets.SIBot-SIToken;
+        let slackToken = secrets.SIBot-SlackToken;//----------------------------------
+        let objectives = await getObjectives();
+        tryDB = true;
+    }catch(err){console.log("Error with tokens or objectives",err);}
+    if(tryDB){
+        console.log(objectives);//----------------------------------------
+        // Try to get DB entries
+    }
     //console.log('Received event:', JSON.stringify(event, null, 2));
     //callback(null, 'Finished');
 }
@@ -81,3 +120,14 @@ exports.main = main;
 
 //For DynamoDB, reference the following:
 // https://docs.amplify.aws/guides/functions/dynamodb-from-js-lambda/q/platform/js/#scanning-a-table
+
+
+// Use this code snippet in your app.
+// If you need more information about configurations or implementing the sample code, visit the AWS docs:
+// https://aws.amazon.com/developers/getting-started/nodejs/
+
+
+// In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
+// See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+// We rethrow the exception by default.
+
