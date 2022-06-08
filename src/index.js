@@ -100,8 +100,8 @@ async function main(event,context,callback){
     var secrets, SIToken, objectives, slackToken;
     try{
         let secrets = await getSecret(secretName);
-        let SIToken = secrets.SIBot-SIToken;
-        let slackToken = secrets.SIBot-SlackToken;//----------------------------------
+        let SIToken = secrets.SIBot;
+        let slackToken = secrets.SIBot;
         let objectives = await getObjectives();
         tryDB = true;
     }catch(err){console.log("Error with tokens or objectives",err);}
