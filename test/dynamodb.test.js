@@ -1,6 +1,14 @@
+const { DynamoDB } = require('aws-sdk');
 const AWS = require('aws-sdk');
-jest.mock('aws-sdk');
-const DynamoDBMock = new AWS.DynamoDB();
+const mockQuery = jest.fn();
+const mockPutItem = jest.fn();
+
+jest.mock('aws-sdk', () => ({
+  DynamoDB: jest.fn(() => ({
+    query: mockQuery,
+    putItem: mockPutItem
+  }))
+}));
 
 const dynamodbClient = require('../src/dynamodb');
 
@@ -16,7 +24,7 @@ describe('dynamodb', () => {
       responseItems = [
         {
           ID: {
-            S: 'objective-id'
+            S: key
           }
         }
       ];
@@ -29,15 +37,22 @@ describe('dynamodb', () => {
     });
 
     test('should call dynamodb', async () => {
-      const dynamoPromise = jest.fn();
-      DynamoDBMock.query = jest.fn().mockReturnValue({
-        promise: dynamoPromise
+      const queryPromise = jest.fn();
+      mockQuery.mockReturnValue({
+        promise: queryPromise
       });
-      dynamoPromise.mockResolvedValue(response);
+      queryPromise.mockResolvedValue(response);
 
       const result = await dynamodbClient.getRecord(key);
 
       expect(result).toBe(responseItems);
+      expect(mockQuery).toBeCalledWith({
+        ExpressionAttributeValues: {
+          ':id': { S: key }
+        },
+        KeyConditionExpression: 'ID = :id',
+        TableName: 'small-improvements-goals'
+      })
     });
   });
 });
