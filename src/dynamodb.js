@@ -12,24 +12,25 @@ async function getRecord(key) {
       ':id': { S: key }
     },
     KeyConditionExpression: 'ID = :id',
-    ProjectionExpression: 'ID, timestamp',
+    ProjectionExpression: 'ID, TIMESTAMP',
     TableName: tableName
   };
 
-  ddb.query(params, function(err, data) {
-    if (err) {
-      console.log('Error', err);
-    } else {
-      // console.log("Success", data.Items);
-      data.Items.forEach(function(element, index, array) {
-        console.log(element.Title.S + ' (' + element.Subtitle.S + ')');
-      });
-    }
-  });
+  const response = await dbClient.query(params).promise();
+
+  return response.Items;
 }
 
-async function insertRecord(activity) {
+function insertRecord(activity) {
+  const params = {
+    TableName: tableName,
+    Item: {
+      ID: { S: activity.content.objective.id },
+      TIMESTAMP: { N: activity.occurredAt }
+    }
+  };
 
+  return dbClient.putItem(params).promise();
 }
 
 exports.getRecord = getRecord;
