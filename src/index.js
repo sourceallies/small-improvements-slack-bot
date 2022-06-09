@@ -90,12 +90,12 @@ async function main(event, context, callback) {
   const secrets = secretsClient.getSecret();
   const objectiveActivities = smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
-  recentlyCompletedObjectives.forEach(acivity => {
+  Promise.all(recentlyCompletedObjectives.map(async (acivity) => {
     const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
     if (!exisingEntry) {
-      
+
     }
-  });
+  }));
   callback(null, 'Finished');
 }
 
