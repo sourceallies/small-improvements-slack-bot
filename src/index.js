@@ -42,7 +42,7 @@ function postToSlack(posts) { // posts are an array
   }
 }
 
-async function main(event, context, callback) {
+async function main(event, context) {
   // let secrets, SIToken, objectives, slackToken
   // const rightNow = new Date(event.time)
   // const earliestTime = rightNow - (1000 * 60 * 12)
@@ -87,8 +87,8 @@ async function main(event, context, callback) {
         Post message to Slack
         Put record in dynamodb
   */
-  const secrets = secretsClient.getSecret();
-  const objectiveActivities = smallImprovementsClient.getObjectives(secrets.SIToken);
+  const secrets = await secretsClient.getSecret();
+  const objectiveActivities = await smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
   Promise.all(recentlyCompletedObjectives.map(async (acivity) => {
     const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
@@ -96,7 +96,7 @@ async function main(event, context, callback) {
 
     }
   }));
-  callback(null, 'Finished');
+  return 'Finished';
 }
 
 const dbQuery = async (pid) => {
