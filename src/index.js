@@ -1,31 +1,31 @@
-'use strict'
+'use strict';
 
 // Load the AWS SDK
-const AWS = require('aws-sdk')
-const secretsClient = require('./secrets')
-const smallImprovementsClient = require('./small-improvements')
-const dynamodbClient = require('./dynamodb')
-const region = 'us-east-1'
+const AWS = require('aws-sdk');
+const secretsClient = require('./secrets');
+const smallImprovementsClient = require('./small-improvements');
+const dynamodbClient = require('./dynamodb');
+const region = 'us-east-1';
 // Create DynamoDB document client
 const docClient = new AWS.DynamoDB.DocumentClient({
   apiVersion: '2012-08-10',
   region
-})
+});
 
-const screeningHours = 24 * 30
+const screeningHours = 24 * 30;
 
 const dynamoParams = {
   TableName: 'small-improvements-goals' // As found in template.yaml
-}
+};
 
 function formatJSON(json) {
-  const now = new Date()
+  const now = new Date();
   return json.items.flatMap(i => i.items)
     .flatMap(i => i.activities)
     .filter(a => a.type === 'OBJECTIVE_STATUS_CHANGED')
     .filter(a => a.change.newStatus.status === 100 || a.change.newStatus.status === 103)
     .filter(a => a.content.objective.visibility === 'PUBLIC')
-    .filter(a => a.occurredAt >= now - (screeningHours * 3660 * 1000))
+    .filter(a => a.occurredAt >= now - (screeningHours * 3660 * 1000));
 }
 
 async function getDatabase() {
@@ -89,37 +89,37 @@ const dbQuery = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
-  }
+  };
 
-  const toOut = await docClient.query(paramss).promise()
-  return toOut
-}
+  const toOut = await docClient.query(paramss).promise();
+  return toOut;
+};
 
 const putItem = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
-  }
-}
+  };
+};
 
 const scanTable = async() => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
-  }
-  const scanResults = []
-  let itemss
+  };
+  const scanResults = [];
+  let itemss;
   do {
-    itemss = await docClient.scan(paramss).promise()
-    itemss.Items.forEach((item) => scanResults.push(item))
-    paramss.ExclusiveStartKey = itemss.LastEvaluatedKey
-  } while (typeof itemss.LastEvaluatedKey !== 'undefined')
-  return scanResults
-}
+    itemss = await docClient.scan(paramss).promise();
+    itemss.Items.forEach((item) => scanResults.push(item));
+    paramss.ExclusiveStartKey = itemss.LastEvaluatedKey;
+  } while (typeof itemss.LastEvaluatedKey !== 'undefined');
+  return scanResults;
+};
 
-exports.handler = main
-exports.main = main
-exports.getObjectives = getObjectives
+exports.handler = main;
+exports.main = main;
+exports.getObjectives = getObjectives;
 
 // schedule with cloudwatch rule -> cron(0 */12 * * *);
 

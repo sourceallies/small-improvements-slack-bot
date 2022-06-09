@@ -1,4 +1,4 @@
-const https = require('https')
+const https = require('https');
 
 function getObjectives(token) {
   const options = {
@@ -11,28 +11,28 @@ function getObjectives(token) {
       Authorization: `Bearer ${token}`,
       'User-Agent': 'SIBot' /* IF YOU REMOVE THIS LINE I WILL BREAK */
     }
-  }
+  };
 
   return new Promise((resolve, reject) => {
     const req = https.request(options, res => {
-      let responsePayload = ''
+      let responsePayload = '';
       if (res.statusCode !== 200) {
-        console.log(`status logged ${res.statusCode}`)
-        reject(new Error(`Could not get objectives: ${res.statusCode}`))
-        return
+        console.log(`status logged ${res.statusCode}`);
+        reject(new Error(`Could not get objectives: ${res.statusCode}`));
+        return;
       }
       res.on('data', d => {
-        responsePayload += d
-      })
+        responsePayload += d;
+      });
       res.on('close', () => {
-        resolve(JSON.parse(responsePayload))
-      })
-    })
+        resolve(JSON.parse(responsePayload));
+      });
+    });
     req.on('error', err => {
-      reject(new Error(`https error: ${err}`))
-    })
-    req.end()
-  })
+      reject(new Error(`https error: ${err}`));
+    });
+    req.end();
+  });
 }
 
-exports.getObjectives = getObjectives
+exports.getObjectives = getObjectives;

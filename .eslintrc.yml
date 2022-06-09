@@ -8,5 +8,6 @@ extends:
 parserOptions:
   ecmaVersion: latest
 rules: {
+  "semi": ["error", "always"],
   "space-before-function-paren": ["error", "never"]
 }
