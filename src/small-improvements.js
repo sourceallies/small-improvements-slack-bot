@@ -1,6 +1,6 @@
 const https = require('https')
 
-function getObjectives (token) {
+function getObjectives(token) {
   const options = {
     hostname: 'allies.small-improvements.com',
     port: 443,

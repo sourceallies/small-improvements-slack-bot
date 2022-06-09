@@ -18,7 +18,7 @@ const dynamoParams = {
   TableName: 'small-improvements-goals' // As found in template.yaml
 }
 
-function formatJSON (json) {
+function formatJSON(json) {
   const now = new Date()
   return json.items.flatMap(i => i.items)
     .flatMap(i => i.activities)
@@ -28,17 +28,17 @@ function formatJSON (json) {
     .filter(a => a.occurredAt >= now - (screeningHours * 3660 * 1000))
 }
 
-async function getDatabase () {
+async function getDatabase() {
   // pull whole database?
 }
 
-function postToSlack (posts) { // posts are an array
+function postToSlack(posts) { // posts are an array
   for (let i = 0; i < posts.length; i++) {
     // --------------------------------------------------
   }
 }
 
-async function main (event, context, callback) {
+async function main(event, context, callback) {
   // let secrets, SIToken, objectives, slackToken
   // const rightNow = new Date(event.time)
   // const earliestTime = rightNow - (1000 * 60 * 12)
@@ -85,7 +85,7 @@ async function main (event, context, callback) {
   */
 }
 
-const dbQuery = async (pid) => {
+const dbQuery = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
@@ -95,14 +95,14 @@ const dbQuery = async (pid) => {
   return toOut
 }
 
-const putItem = async (pid) => {
+const putItem = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
   }
 }
 
-const scanTable = async () => {
+const scanTable = async() => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'

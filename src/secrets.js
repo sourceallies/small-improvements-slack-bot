@@ -2,12 +2,12 @@ const AWS = require('aws-sdk')
 const region = 'us-east-1'
 const secretName = 'SIBot-Tokens'
 
-function getSecret () {
+function getSecret() {
   const client = new AWS.SecretsManager({
     region
   })
   return new Promise((resolve, reject) => {
-    client.getSecretValue({ SecretId: secretName }, function (err, data) {
+    client.getSecretValue({ SecretId: secretName }, function(err, data) {
       if (err) {
         reject(new Error(`Could not get Secret: ${err.code}`))
       } else {

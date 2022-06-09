@@ -6,11 +6,11 @@ const dbClient = new AWS.DynamoDB({
   region
 })
 
-async function getRecord (key) {
+async function getRecord(key) {
 
 }
 
-async function insertRecord (activity) {
+async function insertRecord(activity) {
 
 }
 
