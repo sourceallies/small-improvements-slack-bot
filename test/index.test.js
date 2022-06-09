@@ -14,8 +14,6 @@ describe('index', () => {
     dynamoRecord;
 
   beforeEach(() => {
-    jest.resetModules();
-
     event = {
       time: '2022-06-01T00:00:00Z'
     };
