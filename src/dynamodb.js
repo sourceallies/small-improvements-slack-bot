@@ -18,6 +18,7 @@ async function getRecord(key) {
 
   const response = await dbClient.query(params).promise();
 
+  console.log(`Dynamo response: ${response}`);
   return response.Items;
 }
 

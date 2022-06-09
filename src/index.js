@@ -6,6 +6,7 @@ const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
 const region = 'us-east-1';
+const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
 // Create DynamoDB document client
 const docClient = new AWS.DynamoDB.DocumentClient({
   apiVersion: '2012-08-10',
@@ -18,14 +19,17 @@ const dynamoParams = {
   TableName: 'small-improvements-goals' // As found in template.yaml
 };
 
-function formatJSON(json) {
-  const now = new Date();
+function filterActivities(activities, eventDate) {
+  /*
+    Achieved status == 100
+    Partially achieved status == 103
+  */
   return json.items.flatMap(i => i.items)
     .flatMap(i => i.activities)
     .filter(a => a.type === 'OBJECTIVE_STATUS_CHANGED')
     .filter(a => a.change.newStatus.status === 100 || a.change.newStatus.status === 103)
     .filter(a => a.content.objective.visibility === 'PUBLIC')
-    .filter(a => a.occurredAt >= now - (screeningHours * 3660 * 1000));
+    .filter(a => a.occurredAt >= eventDate.getTime() - threeDaysInMillis);
 }
 
 async function getDatabase() {
@@ -83,9 +87,19 @@ async function main(event, context, callback) {
         Post message to Slack
         Put record in dynamodb
   */
+  const secrets = secretsClient.getSecret();
+  const objectiveActivities = smallImprovementsClient.getObjectives(secrets.SIToken);
+  const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
+  recentlyCompletedObjectives.forEach(acivity => {
+    const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
+    if (!exisingEntry) {
+      
+    }
+  });
+  callback(null, 'Finished');
 }
 
-const dbQuery = async(pid) => {
+const dbQuery = async (pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
@@ -95,14 +109,14 @@ const dbQuery = async(pid) => {
   return toOut;
 };
 
-const putItem = async(pid) => {
+const putItem = async (pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
   };
 };
 
-const scanTable = async() => {
+const scanTable = async () => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
