@@ -19,12 +19,12 @@ const dynamoParams = {
   TableName: 'small-improvements-goals' // As found in template.yaml
 };
 
+/*
+  Achieved status == 100
+  Partially achieved status == 103
+*/
 function filterActivities(activities, eventDate) {
-  /*
-    Achieved status == 100
-    Partially achieved status == 103
-  */
-  return json.items.flatMap(i => i.items)
+  return activities.items.flatMap(i => i.items)
     .flatMap(i => i.activities)
     .filter(a => a.type === 'OBJECTIVE_STATUS_CHANGED')
     .filter(a => a.change.newStatus.status === 100 || a.change.newStatus.status === 103)
@@ -90,7 +90,7 @@ async function main(event, context, callback) {
   const secrets = secretsClient.getSecret();
   const objectiveActivities = smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
-  Promise.all(recentlyCompletedObjectives.map(async(acivity) => {
+  Promise.all(recentlyCompletedObjectives.map(async (acivity) => {
     const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
     if (!exisingEntry) {
 
@@ -99,7 +99,7 @@ async function main(event, context, callback) {
   callback(null, 'Finished');
 }
 
-const dbQuery = async(pid) => {
+const dbQuery = async (pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
@@ -109,14 +109,14 @@ const dbQuery = async(pid) => {
   return toOut;
 };
 
-const putItem = async(pid) => {
+const putItem = async (pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
   };
 };
 
-const scanTable = async() => {
+const scanTable = async () => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'

@@ -7,7 +7,7 @@ function getSecret() {
     region
   });
   return new Promise((resolve, reject) => {
-    client.getSecretValue({ SecretId: secretName }, function(err, data) {
+    client.getSecretValue({ SecretId: secretName }, function (err, data) {
       if (err) {
         reject(new Error(`Could not get Secret: ${err.code}`));
       } else {
