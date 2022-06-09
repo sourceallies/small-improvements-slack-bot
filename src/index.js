@@ -90,7 +90,7 @@ async function main(event, context, callback) {
   const secrets = secretsClient.getSecret();
   const objectiveActivities = smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
-  Promise.all(recentlyCompletedObjectives.map(async (acivity) => {
+  Promise.all(recentlyCompletedObjectives.map(async(acivity) => {
     const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
     if (!exisingEntry) {
 
@@ -99,7 +99,7 @@ async function main(event, context, callback) {
   callback(null, 'Finished');
 }
 
-const dbQuery = async (pid) => {
+const dbQuery = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
@@ -109,14 +109,14 @@ const dbQuery = async (pid) => {
   return toOut;
 };
 
-const putItem = async (pid) => {
+const putItem = async(pid) => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
   };
 };
 
-const scanTable = async () => {
+const scanTable = async() => {
   const paramss = {
     TableName: dynamoParams.TableName,
     region: 'us-east-1'
@@ -133,7 +133,6 @@ const scanTable = async () => {
 
 exports.handler = main;
 exports.main = main;
-exports.getObjectives = getObjectives;
 
 // schedule with cloudwatch rule -> cron(0 */12 * * *);
 
