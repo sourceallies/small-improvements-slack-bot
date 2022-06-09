@@ -12,7 +12,6 @@ async function getRecord(key) {
       ':id': { S: key }
     },
     KeyConditionExpression: 'ID = :id',
-    ProjectionExpression: 'ID, TIMESTAMP',
     TableName: tableName
   };
 

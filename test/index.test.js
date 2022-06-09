@@ -17,7 +17,7 @@ describe('index', () => {
     jest.resetModules();
 
     event = {
-      time: "2022-06-01T00:00:00Z"
+      time: '2022-06-01T00:00:00Z'
     };
 
     secrets = {
@@ -30,7 +30,7 @@ describe('index', () => {
     };
 
     dynamoRecord = {
-  
+
     };
   });
 
@@ -39,9 +39,8 @@ describe('index', () => {
     smallImprovementsClient.getObjectives.mockResolvedValue(activities);
     dynamodbClient.getRecord.mockResolvedValue(undefined);
 
-
     const result = await index.handler(event);
 
     expect(result).toBe('Finished');
   });
-})
+});

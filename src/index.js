@@ -1,23 +1,9 @@
 'use strict';
 
-// Load the AWS SDK
-const AWS = require('aws-sdk');
 const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
-const region = 'us-east-1';
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
-// Create DynamoDB document client
-const docClient = new AWS.DynamoDB.DocumentClient({
-  apiVersion: '2012-08-10',
-  region
-});
-
-const screeningHours = 24 * 30;
-
-const dynamoParams = {
-  TableName: 'small-improvements-goals' // As found in template.yaml
-};
 
 /*
   Achieved status == 100
@@ -32,51 +18,7 @@ function filterActivities(activities, eventDate) {
     .filter(a => a.occurredAt >= eventDate.getTime() - threeDaysInMillis);
 }
 
-async function getDatabase() {
-  // pull whole database?
-}
-
-function postToSlack(posts) { // posts are an array
-  for (let i = 0; i < posts.length; i++) {
-    // --------------------------------------------------
-  }
-}
-
 async function main(event, context) {
-  // let secrets, SIToken, objectives, slackToken
-  // const rightNow = new Date(event.time)
-  // const earliestTime = rightNow - (1000 * 60 * 12)
-  // let tryDB = false
-  // try {
-  //   const secrets = await secretsClient.getSecret()
-  //   const SIToken = secrets.SIToken
-  //   httpsOptions.headers.Authorization = `Bearer ${SIToken}`
-  //   const slackToken = secrets.SlackToken
-  //   let objectives = await smallImprovementsClient.getObjectives(SIToken)
-  //   objectives = objectives.items
-  //   if (objectives.length > 0) { tryDB = true }
-  // } catch (err) { console.log(err) }
-  // if (tryDB) {
-  //   // Get list of eligible ids
-  //   const ids = []
-  //   for (let i = 0; i < objectives.length; i++) {
-  //     ids.push(objectives[i].content.objectives.id)
-  //   }
-  //   // Get All DB Entries
-  //   const dbEntries = await scanTable()
-  //   const dbIDs = dbEntries.map(entry => entry.ID) // Is now just an array of ID's
-  //   const newEntries = []
-  //   ids.forEach(entry => {
-  //     if (!dbIDs.includes(entry)) {
-  //       newEntries.push(entry)
-  //     }
-  //   })
-  //   // -----------------Push all updates to slack
-  //   // -----------------Loop through new entries, put them in DB
-  // }
-  // // console.log('Received event:', JSON.stringify(event, null, 2));
-  // // callback(null, 'Finished');
-
   /*
     Get secrets
     Get SI objectives
@@ -90,46 +32,19 @@ async function main(event, context) {
   const secrets = await secretsClient.getSecret();
   const objectiveActivities = await smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
-  Promise.all(recentlyCompletedObjectives.map(async (acivity) => {
-    const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
-    if (!exisingEntry) {
-
-    }
-  }));
-  return 'Finished';
+  const results = await Promise.allSettled(
+    recentlyCompletedObjectives.map(async (activity) => {
+      const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
+      if (!exisingEntry) {
+        return activity.content.objective;
+      }
+      return undefined;
+    })
+  );
+  const successfulPosts = results.filter(x => x.value);
+  const failedPosts = results.filter(x => x.status === 'rejected');
+  return `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
 }
-
-const dbQuery = async (pid) => {
-  const paramss = {
-    TableName: dynamoParams.TableName,
-    region: 'us-east-1'
-  };
-
-  const toOut = await docClient.query(paramss).promise();
-  return toOut;
-};
-
-const putItem = async (pid) => {
-  const paramss = {
-    TableName: dynamoParams.TableName,
-    region: 'us-east-1'
-  };
-};
-
-const scanTable = async () => {
-  const paramss = {
-    TableName: dynamoParams.TableName,
-    region: 'us-east-1'
-  };
-  const scanResults = [];
-  let itemss;
-  do {
-    itemss = await docClient.scan(paramss).promise();
-    itemss.Items.forEach((item) => scanResults.push(item));
-    paramss.ExclusiveStartKey = itemss.LastEvaluatedKey;
-  } while (typeof itemss.LastEvaluatedKey !== 'undefined');
-  return scanResults;
-};
 
 exports.handler = main;
 exports.main = main;
