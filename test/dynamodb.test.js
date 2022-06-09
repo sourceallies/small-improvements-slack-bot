@@ -55,4 +55,43 @@ describe('dynamodb', () => {
       })
     });
   });
+
+  describe('putRecord', () => {
+    let activity,
+      activityTime,
+      objectiveId;
+
+    beforeEach(() => {
+      activityTime = 1654539707081
+      objectiveId = 'objective-id'
+      activity = {
+        occurredAt: activityTime,
+        content: {
+          objective: {
+            id: objectiveId
+          }
+        }
+      }
+    });
+
+    test('should call dynamodb', async () => {
+      const putItemPromise = jest.fn();
+      mockPutItem.mockReturnValue({
+        promise: putItemPromise
+      });
+      putItemPromise.mockResolvedValue({});
+
+      const result = await dynamodbClient.insertRecord(activity);
+
+      expect(result).toStrictEqual({});
+      expect(mockPutItem).toBeCalledWith({
+        TableName: 'small-improvements-goals',
+        Item: {
+          ID: { S: objectiveId},
+          TIMESTAMP: {N: activityTime},
+          TTL: {N: activityTime/1000 + (7 * 24 * 3600)}
+        }
+      })
+    });
+  });
 });

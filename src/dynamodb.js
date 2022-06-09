@@ -5,6 +5,7 @@ const dbClient = new AWS.DynamoDB({
   apiVersion: '2012-08-10',
   region
 });
+const sevenDaysInSeconds = 7 * 24 * 60 * 60;
 
 async function getRecord(key) {
   const params = {
@@ -17,16 +18,17 @@ async function getRecord(key) {
 
   const response = await dbClient.query(params).promise();
 
-  console.log(`Dynamo response: ${response}`);
   return response.Items;
 }
 
 function insertRecord(activity) {
+  const timeToLive = activity.occurredAt / 1000 + sevenDaysInSeconds;
   const params = {
     TableName: tableName,
     Item: {
       ID: { S: activity.content.objective.id },
-      TIMESTAMP: { N: activity.occurredAt }
+      TIMESTAMP: { N: activity.occurredAt },
+      TTL: {N: timeToLive}
     }
   };
 
