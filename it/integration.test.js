@@ -1,6 +1,6 @@
 const index = require('../src/index');
 
-describe.only('integration', () => {
+describe('integration', () => {
   const event = {
     time: '2022-06-01T00:00:00Z'
   }

@@ -6,8 +6,8 @@
   "scripts": {
     "fixlint": "eslint --fix src/*.js test/*.js",
     "lint": "eslint src/*.js test/*.js",
-    "integration": "jest integration --detectOpenHandles",
-    "test": "jest test",
+    "integration": "jest ./it --detectOpenHandles",
+    "test": "jest ./test",
     "verify": "npm run lint && npm run test"
   },
   "repository": {

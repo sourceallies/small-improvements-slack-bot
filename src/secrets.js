@@ -8,13 +8,7 @@ async function getSecret() {
   });
   const data = await client.getSecretValue({ SecretId: secretName }).promise();
 
-  console.log('Retireved secrets');
-  if ('SecretString' in data) {
-    return JSON.parse(data.SecretString);
-  } else {
-    const buff = Buffer.from(data.SecretBinary, 'base64');
-    return JSON.parse(buff.toString('ascii'));
-  }
+  return JSON.parse(data.SecretString);
 }
 
 exports.getSecret = getSecret;

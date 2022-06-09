@@ -41,6 +41,6 @@ describe('index', () => {
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished');
+    expect(result).toBe('Finished 0 successfully. Failed 0');
   });
 });
