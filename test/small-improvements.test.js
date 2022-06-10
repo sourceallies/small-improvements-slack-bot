@@ -1,6 +1,6 @@
 const smallImprovementsClient = require('../src/small-improvements');
 require('https');
-const apiResponseBody = `{
+const activitiesBody = `{
   "items": [
     {
       "occurredAt": 1654612581248,
@@ -80,26 +80,39 @@ const apiResponseBody = `{
     }
   ]
 }`;
+const mockHttps = (mockStatusCode,mockBody)=>{
+  jest.mock('https', () => ({
+    request: (postOption, requestCallBack) => requestCallBack({
+      on: (data, dataCallBack) => dataCallBack(Buffer.from(mockBody, 'utf8')),
+      statusCode: mockStatusCode
+    }),
+    on: jest.fn(),
+    write: jest.fn(),
+    end: jest.fn()
+  }));
+}
 
-jest.mock('https', () => ({
-  ...jest.requireActual('https'), // import and retain the original functionalities
-  request: (postOption, requestCallBack) => requestCallBack({
-    on: (data, dataCallBack) => dataCallBack(Buffer.from(apiResponseBody, 'utf8')),
-    statusCode: 200
-  }),
-  on: jest.fn(),
-  write: jest.fn(),
-  end: jest.fn()
-}));
+
 
 describe('small-improvements', () => {
   let token, activitiesBody;
   beforeEach(() => {
     token = 'token';
-    activitiesBody = apiResponseBody;
+    mockActivitiesBody = activitiesBody;
+  });
+  afterEach(()=>{
+    jest.resetAllMocks();
   });
   test('Should get objectives', async () => {
+    mockHttps(200,mockActivitiesBody);
     const response = await smallImprovementsClient.getObjectives(token);
-    expect('items' in response).toEqual('items' in JSON.parse(activitiesBody));
+    expect('items' in response).toEqual('items' in JSON.parse(mockActivitiesBody));
+  });
+
+  test('Should reject any non-200 responses', async () => {
+    mockHttps(403,mockActivitiesBody);
+    const response = await smallImprovementsClient.getObjectives(token);
+    console.log('response',response);
+    expect(response).toEqual(403);
   });
 });
