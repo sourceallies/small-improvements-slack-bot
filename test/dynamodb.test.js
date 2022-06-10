@@ -52,7 +52,7 @@ describe('dynamodb', () => {
         },
         KeyConditionExpression: 'ID = :id',
         TableName: 'small-improvements-goals'
-      })
+      });
     });
   });
 
@@ -62,8 +62,8 @@ describe('dynamodb', () => {
       objectiveId;
 
     beforeEach(() => {
-      activityTime = 1654539707081
-      objectiveId = 'objective-id'
+      activityTime = 1654539707081;
+      objectiveId = 'objective-id';
       activity = {
         occurredAt: activityTime,
         content: {
@@ -71,7 +71,7 @@ describe('dynamodb', () => {
             id: objectiveId
           }
         }
-      }
+      };
     });
 
     test('should call dynamodb', async () => {
@@ -87,11 +87,11 @@ describe('dynamodb', () => {
       expect(mockPutItem).toBeCalledWith({
         TableName: 'small-improvements-goals',
         Item: {
-          ID: { S: objectiveId},
-          TIMESTAMP: {N: activityTime},
-          TTL: {N: activityTime/1000 + (7 * 24 * 3600)}
+          ID: { S: objectiveId },
+          TIMESTAMP: { N: activityTime },
+          TTL: { N: activityTime / 1000 + (7 * 24 * 3600) }
         }
-      })
+      });
     });
   });
 });

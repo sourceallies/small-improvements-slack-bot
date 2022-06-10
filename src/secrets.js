@@ -8,8 +8,10 @@ async function getSecret() {
   });
   const response = client.getSecretValue({ SecretId: secretName });
   const data = await response.promise();
+  let Tout = data.SecretString;
+  Tout = JSON.parse(data.SecretString);
 
-  return JSON.parse(data.SecretString);
+  return Tout;
 }
 
 exports.getSecret = getSecret;

@@ -28,7 +28,7 @@ function insertRecord(activity) {
     Item: {
       ID: { S: activity.content.objective.id },
       TIMESTAMP: { N: activity.occurredAt },
-      TTL: {N: timeToLive}
+      TTL: { N: timeToLive }
     }
   };
 
