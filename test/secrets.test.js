@@ -1,12 +1,13 @@
-const AWS = require('aws-sdk');
+require('aws-sdk');
 const mockSecretName = 'SIBot-Tokens';
 const mockGetSecretsPromise = jest.fn();
+const mockGetSecretValue = jest.fn(() => ({
+  promise: mockGetSecretsPromise
+}));
 
 jest.mock('aws-sdk', () => ({
   SecretsManager: jest.fn(() => ({
-    getSecretValue: jest.fn(() => ({
-      promise: mockGetSecretsPromise
-    }))
+    getSecretValue: mockGetSecretValue
   }))
 }));
 
@@ -18,8 +19,8 @@ describe('secrets', () => {
   beforeEach(() => {
     data = {
       SecretString: `{
-        SIToken: 'small-improvements-token',
-        SlackToken: 'slack-token'
+        "SIToken": "small-improvements-token",
+        "SlackToken": "slack-token"
       }`
     };
   });
@@ -27,7 +28,7 @@ describe('secrets', () => {
   test('secrets', async () => {
     mockGetSecretsPromise.mockResolvedValue(data);
     const result = await secretsClient.getSecret();
-    expect(result).toBe(JSON.parse(data.SecretString));
-    expect(AWS.SecretsManager).toBeCalledWith({ SecretId: mockSecretName });
+    expect(result).toStrictEqual(JSON.parse(data.SecretString));
+    expect(mockGetSecretValue).toBeCalledWith({ SecretId: mockSecretName });
   });
 });
