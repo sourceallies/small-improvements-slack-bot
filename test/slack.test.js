@@ -14,7 +14,7 @@ describe('Slack Requests', () => {
     channelID = 'channelID';
     mockObjective = {
       title: 'title',
-      owner: {name: 'Reece'}
+      owner: { name: 'Reece' }
     };
     mockStatus = 'Achieved'
     responseBody = `{
@@ -49,7 +49,7 @@ describe('Slack Requests', () => {
   });
 
   test('Formats messages correctly', async () => {
-    formattedText = slackClient.formatSlackMessage(mockObjective,mockStatus);
+    formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
     expect(formattedText.text).toStrictEqual("@Reece has achieved their goal: *title!*");
   });
 
@@ -59,8 +59,8 @@ describe('Slack Requests', () => {
       statusCode: 200
     }));
 
-    const response = await slackClient.slackPost(token,channelID,mockObjective,mockStatus);
-    const formattedMessage = slackClient.formatSlackMessage(mockObjective,mockStatus);;
+    const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
+    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);;
     const expectedOptions = {
       hostname: 'https://slack.com/api',
       port: 443,
@@ -85,8 +85,8 @@ describe('Slack Requests', () => {
 
     let actualError;
     try {
-      await slackClient.slackPost(token,channelID,mockObjective,mockStatus);
-    }catch(e) {actualError = e;}
+      await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
+    } catch (e) { actualError = e; }
 
     expect(actualError).toStrictEqual(new Error('Could not post to Slack: 403'));
   });
