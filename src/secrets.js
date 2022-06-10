@@ -6,7 +6,8 @@ async function getSecret() {
   const client = new AWS.SecretsManager({
     region
   });
-  const data = await client.getSecretValue({ SecretId: secretName }).promise();
+  const response = client.getSecretValue({ SecretId: secretName });
+  const data = await response.promise();
 
   return JSON.parse(data.SecretString);
 }
