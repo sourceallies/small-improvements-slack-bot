@@ -1,5 +1,5 @@
 const smallImprovementsClient = require('../src/small-improvements');// request
-const httpsMock = require('https');
+require('https');
 const apiResponseBody = `{
   "items": [
     {
@@ -82,15 +82,15 @@ const apiResponseBody = `{
 }`;
 
 jest.mock('https', () => ({
-...jest.requireActual('https'), // import and retain the original functionalities
-request: (post_option, cb) => cb({
-on: (data, cb) => cb(Buffer.from(apiResponseBody, 'utf8')),
-statusCode: 200,
-statusMessage: 'API Success'
-}),
-on: jest.fn(),
-write: jest.fn(),
-end: jest.fn()
+  ...jest.requireActual('https'), // import and retain the original functionalities
+  request: (postOption, callback) => callback({
+    on: (data, callback) => callback(Buffer.from(apiResponseBody, 'utf8')),
+    statusCode: 200,
+    statusMessage: 'API Success'
+  }),
+  on: jest.fn(),
+  write: jest.fn(),
+  end: jest.fn()
 }));
 
 describe('small-improvements', () => {
@@ -99,11 +99,8 @@ describe('small-improvements', () => {
     token = 'token';
     activitiesBody = apiResponseBody;
   });
-  jest.setTimeout(5000);
   test('Should get objectives', async () => {
     const response = await smallImprovementsClient.getObjectives(token);
-    console.log(JSON.parse(activitiesBody));
     expect('items' in response).toEqual('items' in JSON.parse(activitiesBody));
   });
-
 });
