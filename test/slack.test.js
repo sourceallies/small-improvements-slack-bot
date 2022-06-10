@@ -16,7 +16,7 @@ describe('Slack Requests', () => {
       title: 'title',
       owner: { name: 'Reece' }
     };
-    mockStatus = 'Achieved'
+    mockStatus = 'Achieved';
     responseBody = `{
       ok: true,
       channel: 'C0179PL5K8E',
@@ -49,8 +49,8 @@ describe('Slack Requests', () => {
   });
 
   test('Formats messages correctly', async () => {
-    formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
-    expect(formattedText.text).toStrictEqual("@Reece has achieved their goal: *title!*");
+    const formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
+    expect(formattedText.text).toStrictEqual('@Reece has achieved their goal: *title!*');
   });
 
   test('Should be able to post messages', async () => {
@@ -60,7 +60,7 @@ describe('Slack Requests', () => {
     }));
 
     const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
-    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);;
+    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);
     const expectedOptions = {
       hostname: 'https://slack.com/api',
       port: 443,
@@ -71,8 +71,7 @@ describe('Slack Requests', () => {
         Authorization: `Bearer ${token}`,
         'Content-Length': formattedMessage.length
       }
-    }
-
+    };
     expect(response).toStrictEqual(responseBody);
     expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
   });

@@ -1,13 +1,12 @@
 const https = require('https');
-
 const messageVariables = {
-  username: 'ChangeMe! I am the username of the bot!',
+  username: 'Small Improvements Update',
   icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png'
-  //icon_emoji: ':+1:', /* :+1: = thumbs up emoji as avatar */
+  // icon_emoji: ':+1:', /* :+1: = thumbs up emoji as avatar */
 };
 
 // Post a message to a channel your app is in using ID and message text
-async function slackPost(authToken, channelID, objective, status) { //postData should be JSON { channel:"#channel", text:'message' } (may need to be JSON string?)
+async function slackPost(authToken, channelID, objective, status) { // postData should be JSON { channel:"#channel", text:'message' } (may need to be JSON string?)
   const formattedMessage = formatSlackMessage(objective, status);
   formattedMessage.channel = '#' + channelID;
   const options = {
@@ -20,10 +19,10 @@ async function slackPost(authToken, channelID, objective, status) { //postData s
       Authorization: `Bearer ${authToken}`,
       'Content-Length': formattedMessage.length
     }
-  }
+  };
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
-      let body = [];
+      const body = [];
       if (res.statusCode !== 200) {
         reject(new Error(`Could not post to Slack: ${res.statusCode}`));
         return;
@@ -32,24 +31,24 @@ async function slackPost(authToken, channelID, objective, status) { //postData s
         body.push(d);
       });
       res.on('end', () => {
-        let responseBody = Buffer.concat(body).toString()
-        resolve(responseBody)
-      })
+        const responseBody = Buffer.concat(body).toString();
+        resolve(responseBody);
+      });
     });
     req.on('error', (e) => {
       reject(e);
-      return;
     });
     req.write(formattedMessage);
     req.end();
   });
 }
 
-function formatSlackMessage(objectiveItem, newStatus) {//activity?
-  let toSend = messageVariables;
-  toSend.text = "@" + objectiveItem.owner.name + " has " + newStatus.toLowerCase() + " their goal: *" + objectiveItem.title + "!*";
-  return toSend;//return JSON format
-  //return JSON.stringify(toSend);//if the return would ideally be in string format
+function formatSlackMessage(objectiveItem, newStatus) { // activity?
+  const toSend = messageVariables;
+  toSend.text = '@' + objectiveItem.owner.name + ' has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
+  return toSend;// return JSON format
+  // return JSON.stringify(toSend);
+  // use the above if the return would ideally be in string format
 }
 
 exports.formatSlackMessage = formatSlackMessage;
