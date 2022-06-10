@@ -1,4 +1,4 @@
-const smallImprovementsClient = require('../src/small-improvements');// request
+const smallImprovementsClient = require('../src/small-improvements');
 require('https');
 const apiResponseBody = `{
   "items": [
@@ -83,10 +83,9 @@ const apiResponseBody = `{
 
 jest.mock('https', () => ({
   ...jest.requireActual('https'), // import and retain the original functionalities
-  request: (postOption, callback) => callback({
-    on: (data, callback) => callback(Buffer.from(apiResponseBody, 'utf8')),
-    statusCode: 200,
-    statusMessage: 'API Success'
+  request: (postOption, requestCallBack) => requestCallBack({
+    on: (data, dataCallBack) => dataCallBack(Buffer.from(apiResponseBody, 'utf8')),
+    statusCode: 200
   }),
   on: jest.fn(),
   write: jest.fn(),
