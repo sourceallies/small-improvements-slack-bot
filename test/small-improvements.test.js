@@ -1,13 +1,27 @@
-const smallImprovementsClient = require('../src/small-improvements');
-const https = require('https');
-const { EventEmitter } = require('stream');
+const smallImprovementsClient = require('../src/small-improvements');// request
+const httpsMock = require('https');
+const Stream = require('stream');
+const mockOn = jest.fn(() => ({
+  data: jest.fn(),
+  close: jest.fn(),
+  error: jest.fn(),
+  end: jest.fn()
+}));
+const mockEnd = jest.fn();
+const mockRequest = jest.fn(() => ({
+  on: mockOn,
+  end: mockEnd
+}));
 
-jest.mock('https');
+jest.mock('https', () => ({
+  request: jest.fn(() => ({
+    on: mockOn,
+    end: mockEnd
+  }))
+}));
 
 describe('small-improvements', () => {
-  let token,
-    activitiesBody;
-
+  let token, activitiesBody;
   beforeEach(() => {
     token = 'token';
     activitiesBody = `{
@@ -91,6 +105,23 @@ describe('small-improvements', () => {
       ]
     }`;
   });
+  jest.setTimeout(5000);
+  test('Should get objectives', async () => {
+    const emitter = new Stream();
+    httpsMock.get = jest.fn().mockImplementation((url, callback) => {
+      callback(emitter);
+
+      emitter.emit('data', activitiesBody);
+      emitter.emit('close');
+      emitter.emit('end'); // this will trigger the promise resolve
+    });
+
+    const response = await smallImprovementsClient.getObjectives(token);
+
+    expect(response).toEqual(activitiesBody);
+  });
+
+  /*
 
   test('should get objectives', async () => {
     const emitter = new EventEmitter();
@@ -104,9 +135,12 @@ describe('small-improvements', () => {
 
     https.request.mockImplementation((options, callback) => {
       callback(response);
-      return emitter;
+      return mockRequest;
     });
 
     const smallImprovementsResponse = await smallImprovementsClient.getObjectives(token);
+
   });
+
+  */
 });
