@@ -9,15 +9,15 @@ permissions:
 
 jobs:
   build:
-  name: Build
-  runs-on: "ubuntu-latest"
-  steps:
-    - name: Install Node 16
-      uses: actions/setup-node@v3
-      with:
-        node-version-file: ".nvmrc"
-    - run: npm ci
-    - run: npm test
+    name: Build
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - run: npm ci
+      - run: npm test
 
   deploy:
     name: Deploy
