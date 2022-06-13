@@ -14,13 +14,16 @@ permissions:
   packages: write
 
 jobs:
-  #build:
-  #  name: Build
-  #  runs-on: "ubuntu-latest"
-  #  steps:
-      #- uses: actions/checkout@v2
-      #- name: yaml-lint
-      #  uses: ibiqlik/action-yamllint@v3
+  build:
+    name: Build
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: npm install
+      - run: npm test
 
 
   deploy:
