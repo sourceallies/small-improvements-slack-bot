@@ -1,12 +1,7 @@
 name: Deployment
 
 
-on:
-  workflow_dispatch: {}
-  push:
-    branches:
-      - main
-      - dev
+on: workflow_call
 
 permissions:
   id-token: write
@@ -15,25 +10,26 @@ permissions:
 
 jobs:
   build:
-    name: Build
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: Install Node 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - run: npm install
-      - run: npm test
+  name: Build
+  runs-on: "ubuntu-latest"
+  steps:
+    - name: Install Node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+    - run: npm ci
+    - run: npm test
 
 
   deploy:
     name: Deploy
     runs-on: "ubuntu-latest"
     steps:
+      needs: Build
       - name: Install Node 16
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version-file: '.nvmrc'
 
       - uses: actions/checkout@v3
 
@@ -49,7 +45,5 @@ jobs:
           role-session-name: DeployToProd
       # sam build
       - run: sam build --use-container
-      # Run unit tests here
-      - run: npm test
       # sam deploy
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
