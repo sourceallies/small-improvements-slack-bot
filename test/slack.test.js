@@ -49,7 +49,7 @@ describe('Slack Requests', () => {
   });
 
   test('Formats messages correctly', async () => {
-    const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus);
+    const formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
     expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
   });
 

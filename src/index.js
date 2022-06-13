@@ -58,7 +58,7 @@ async function main(event, context) {
 exports.handler = main;
 exports.main = main;
 
-// schedule with cloudwatch rule -> cron(0 */12 * * *);
+// schedule with cloudwatch rule -> cron(0 */12 * * *);//?
 
 // For DynamoDB, reference the following:
 // https://docs.amplify.aws/guides/functions/dynamodb-from-js-lambda/q/platform/js/#scanning-a-table
