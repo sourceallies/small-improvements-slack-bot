@@ -25,8 +25,8 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: 'rate(12 hours)' # this should be 12 hours for prod
-            Name: TestSchedule
-            Description: test schedule
+            Name: SmallImprovementsBotTrigger
+            Description: Event to trigger the small improvements slack bot to post completed goals
             Enabled: false # Needs to be true in prod
 
 
