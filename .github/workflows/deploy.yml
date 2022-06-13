@@ -27,22 +27,20 @@ jobs:
 
   deploy-dev:
     name: Deploy-dev
+    uses: ./.github/actions/deploy
+    with:
+        ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
+        SESSIONNAME: DeployToDev
     runs-on: "ubuntu-latest"
     needs: Build
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./actions/deploy/action.yml
-        with:
-          ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
-          SESSIONNAME: DeployToDev
+        
 
   deploy-prod:
     name: Deploy-prod
+    uses: ./.github/actions/deploy
+    with:
+        ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
+        SESSIONNAME: DeployToProd
     runs-on: "ubuntu-latest"
     needs: Deploy-dev
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./actions/deploy/action.yml
-        with:
-          ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
-          SESSIONNAME: DeployToProd
+        
