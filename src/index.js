@@ -3,7 +3,9 @@
 const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
+const slackClient = require('./slack');
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
+const slackChannel = 'si-sandbox';
 
 /*
   Achieved status == 100
@@ -35,7 +37,14 @@ async function main(event, context) {
   const results = await Promise.allSettled(
     recentlyCompletedObjectives.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
-      if (!exisingEntry) {
+      if (!exisingEntry?.length) {
+        await slackClient.slackPost(
+          secrets.SlackToken,
+          slackChannel,
+          activity.content.objective,
+          activity.change.newStatus.description
+        );
+        await dynamodbClient.insertRecord(activity);
         return activity.content.objective;
       }
       return undefined;

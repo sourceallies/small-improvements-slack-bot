@@ -1,5 +1,4 @@
-const { DynamoDB } = require('aws-sdk');
-const AWS = require('aws-sdk');
+require('aws-sdk');
 const mockQuery = jest.fn();
 const mockPutItem = jest.fn();
 
@@ -21,10 +20,19 @@ describe('dynamodb', () => {
     beforeEach(() => {
       key = 'objective-id';
 
+      const now = new Date().getTime();
+      const nowInSeconds = now / 1000;
+
       responseItems = [
         {
           ID: {
             S: key
+          },
+          TIMESTAMP: {
+            N: now
+          },
+          TTL: {
+            N: nowInSeconds
           }
         }
       ];
@@ -75,6 +83,7 @@ describe('dynamodb', () => {
     });
 
     test('should call dynamodb', async () => {
+      const activityTimePlusSevenDaysInSeconds = activityTime / 1000 + (7 * 24 * 3600);
       const putItemPromise = jest.fn();
       mockPutItem.mockReturnValue({
         promise: putItemPromise
@@ -89,7 +98,7 @@ describe('dynamodb', () => {
         Item: {
           ID: { S: objectiveId },
           TIMESTAMP: { N: String(activityTime) },
-          TTL: { N: String(activityTime / 1000 + (7 * 24 * 3600)) }
+          TTL: { N: String(activityTimePlusSevenDaysInSeconds) }
         }
       });
     });
