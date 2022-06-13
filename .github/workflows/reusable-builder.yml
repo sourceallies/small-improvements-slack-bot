@@ -2,6 +2,11 @@ name: reusable-builder
 
 on: 
   workflow_call:
+    secrets:
+      ROLE_ARN:
+        required: true
+      SESSIONNAME:
+        required: true
     inputs:
       ROLE_ARN:
         required: true
