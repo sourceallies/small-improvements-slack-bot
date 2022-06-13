@@ -1,6 +1,11 @@
 name: Deployment
 
-on: workflow_call
+on: 
+  push:
+    branches:
+      - main
+      - dev
+
 
 permissions:
   id-token: write
