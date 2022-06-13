@@ -1,6 +1,7 @@
 name: Deployment
 
-on: 
+on:
+  workflow_dispatch: {}
   push:
     branches:
       - main
@@ -68,5 +69,3 @@ jobs:
       - run: sam build --use-container
       # sam deploy
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
-    
-        
