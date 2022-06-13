@@ -88,8 +88,8 @@ describe('dynamodb', () => {
         TableName: 'small-improvements-goals',
         Item: {
           ID: { S: objectiveId },
-          TIMESTAMP: { N: activityTime },
-          TTL: { N: activityTime / 1000 + (7 * 24 * 3600) }
+          TIMESTAMP: { N: String(activityTime) },
+          TTL: { N: String(activityTime / 1000 + (7 * 24 * 3600)) }
         }
       });
     });
