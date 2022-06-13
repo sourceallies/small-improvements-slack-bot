@@ -7,7 +7,7 @@ const messageVariables = {
 // Post a message to a channel your app is in using ID and message text
 async function slackPost(authToken, channelName, objective, status) { // postData should be JSON { channel:"#channel", text:'message' } (may need to be JSON string?)
   const formattedMessage = formatSlackMessage(objective, status);
-  formattedMessage.channel = '#' + channelName;
+  formattedMessage.channel = '' + channelName;
   formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
   formattedMessage.username = 'SIBot';
   formattedMessage.link_names = 1;
