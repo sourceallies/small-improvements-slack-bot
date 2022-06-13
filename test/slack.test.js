@@ -50,7 +50,7 @@ describe('Slack Requests', () => {
 
   test('Formats messages correctly', async () => {
     const formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
-    expect(formattedText.text).toStrictEqual('@Reece has achieved their goal: *title!*');
+    expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
   });
 
   test('Should be able to post messages', async () => {
