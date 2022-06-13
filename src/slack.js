@@ -7,8 +7,11 @@ const messageVariables = {
 
 // Post a message to a channel your app is in using ID and message text
 async function slackPost(authToken, channelID, objective, status) { // postData should be JSON { channel:"#channel", text:'message' } (may need to be JSON string?)
-  const formattedMessage = formatSlackMessage(objective, status);
+  const formattedMessage = await formatSlackMessage(objective, status);
   formattedMessage.channel = '#' + channelID;
+  formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
+  formattedMessage.username = 'SIBot';
+  formattedMessage.link_names = 1;
   const options = {
     hostname: 'https://slack.com/api',
     port: 443,
@@ -43,9 +46,15 @@ async function slackPost(authToken, channelID, objective, status) { // postData 
   });
 }
 
-function formatSlackMessage(objectiveItem, newStatus) { // activity?
+async function formatSlackMessage(objectiveItem, newStatus) { // activity?
   const toSend = messageVariables;
-  toSend.text = '@' + objectiveItem.owner.name + ' has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
+  // Get email via Small Improvemnts API (using SIUID)
+  let SIUID = objectiveItem.owner.id;
+  //-----------------------------------
+  // Get SlackUID via email
+  //-----------------------------------
+  let slackUID = objectiveItem.owner.name;//----------------------------------------------------------------------------------FIXME
+  toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
   return toSend;// return JSON format
   // return JSON.stringify(toSend);
   // use the above if the return would ideally be in string format
