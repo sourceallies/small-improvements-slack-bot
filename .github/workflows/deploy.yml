@@ -30,6 +30,7 @@ jobs:
     runs-on: "ubuntu-latest"
     needs: Build
     steps:
+      - uses: actions/checkout@v3
       - uses: ./actions/deploy/action.yml
         with:
           ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
@@ -40,6 +41,7 @@ jobs:
     runs-on: "ubuntu-latest"
     needs: Deploy-dev
     steps:
+      - uses: actions/checkout@v3
       - uses: ./actions/deploy/action.yml
         with:
           ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
