@@ -47,6 +47,6 @@ jobs:
       # sam build
       - run: sam build --use-container
       # Run unit tests here
-      # -----------------------
+      - run: npm test
       # sam deploy
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
