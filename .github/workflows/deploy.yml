@@ -26,18 +26,20 @@ jobs:
 
   deploy-dev:
     name: Deploy-dev
+    needs: Build
     uses: ./.github/workflows/reusable-builder.yml
     with:
-        ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
-        SESSIONNAME: DeployToDev
-    needs: Build
+      ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
+      SESSIONNAME: DeployToDev
+    
         
 
   deploy-prod:
     name: Deploy-prod
+    needs: Deploy-dev
     uses: ./.github/workflows/reusable-builder.yml
     with:
-        ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
-        SESSIONNAME: DeployToProd
-    needs: Deploy-dev
+      ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
+      SESSIONNAME: DeployToProd
+    
         
