@@ -34,6 +34,7 @@ async function main(event, context) {
   const secrets = await secretsClient.getSecret();
   const objectiveActivities = await smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));
+  console.log(`Found ${recentlyCompletedObjectives.length} recently completed objectives.`);
   const results = await Promise.allSettled(
     recentlyCompletedObjectives.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
@@ -52,7 +53,10 @@ async function main(event, context) {
   );
   const successfulPosts = results.filter(x => x.value);
   const failedPosts = results.filter(x => x.status === 'rejected');
-  return `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
+  failedPosts.forEach(fail => console.error(fail.reason));
+  const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
+  console.log(message);
+  return message;
 }
 
 exports.handler = main;

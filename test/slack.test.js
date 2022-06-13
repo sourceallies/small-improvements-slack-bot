@@ -42,6 +42,7 @@ describe('Slack Requests', () => {
 
     httpsMock.on = jest.fn();
     httpsMock.end = jest.fn();
+    httpsMock.write = jest.fn();
   });
 
   afterEach(() => {
@@ -54,26 +55,45 @@ describe('Slack Requests', () => {
   });
 
   test('Should be able to post messages', async () => {
-    httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
-      on: (data, dataCallBack) => dataCallBack(Buffer.from(responseBody, 'utf8')),
-      statusCode: 200
-    }));
+    const writeMock = jest.fn();
+    const endMock = jest.fn();
+    httpsMock.request = jest.fn((postOption, requestCallBack) => {
+      requestCallBack({
+        on: (data, dataCallBack) => dataCallBack(Buffer.from(responseBody, 'utf8')),
+        statusCode: 200
+      });
+      return {
+        write: writeMock,
+        end: endMock,
+        on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+      };
+    });
 
     const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
     const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);
     const expectedOptions = {
-      hostname: 'https://slack.com/api',
+      hostname: 'sourceallies.slack.com',
       port: 443,
-      path: '/chat.postMessage',
+      path: '/api/chat.postMessage',
       method: 'POST',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
-        'Content-Length': formattedMessage.length
+        'Content-Type': 'application/json'
       }
     };
     expect(response).toStrictEqual(responseBody);
     expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
+    expect(endMock).toHaveBeenCalled();
+    expect(writeMock).toHaveBeenCalledWith(JSON.stringify(
+      {
+        ...formattedMessage,
+        channel: channelID,
+        icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
+        username: 'SAI SI Bot',
+        link_names: 1
+      }
+    ));
   });
 
   test('Should reject any non-200 responses', async () => {

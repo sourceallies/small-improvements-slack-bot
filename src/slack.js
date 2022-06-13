@@ -9,17 +9,17 @@ async function slackPost(authToken, channelName, objective, status) { // postDat
   const formattedMessage = formatSlackMessage(objective, status);
   formattedMessage.channel = '' + channelName;
   formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
-  formattedMessage.username = 'SIBot';
+  formattedMessage.username = 'SAI SI Bot';
   formattedMessage.link_names = 1;
   const options = {
-    hostname: 'https://slack.com/api',
+    hostname: 'sourceallies.slack.com',
     port: 443,
-    path: '/chat.postMessage',
+    path: '/api/chat.postMessage',
     method: 'POST',
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${authToken}`,
-      'Content-Length': formattedMessage.length
+      'Content-Type': 'application/json'
     }
   };
   return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ async function slackPost(authToken, channelName, objective, status) { // postDat
     req.on('error', (e) => {
       reject(e);
     });
-    req.write(formattedMessage);
+    req.write(JSON.stringify(formattedMessage));
     req.end();
   });
 }
@@ -48,11 +48,11 @@ async function slackPost(authToken, channelName, objective, status) { // postDat
 function formatSlackMessage(objectiveItem, newStatus) { // activity?
   const toSend = messageVariables;
   // Get email via Small Improvemnts API (using SIUID)
-  let SIUID = objectiveItem.owner.id;
-  //------------------------------------------------
+  const SIUID = objectiveItem.owner.id;
+  // ------------------------------------------------
   // Get SlackUID via email
-  //------------------------------------------------
-  let slackUID = objectiveItem.owner.name;
+  // ------------------------------------------------
+  const slackUID = objectiveItem.owner.name;
   toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
   return toSend;// return JSON format
   // return JSON.stringify(toSend);
