@@ -9,7 +9,7 @@ function getObjectives(token) {
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
-      'User-Agent': 'SIBot' /* IF YOU REMOVE THIS LINE I WILL BREAK */
+      'User-Agent': 'SIBot' /* IF YOU REMOVE THE USER AGENT LINE I (THIS BOT) WILL BREAK */
     }
   };
 

@@ -62,15 +62,8 @@ async function main(event, context) {
 exports.handler = main;
 exports.main = main;
 
-// schedule with cloudwatch rule -> cron(0 */12 * * *);//?
+/*
+      Crontab rule for cloudwatch
+        cron(0 3,15 * * 1-5);//?
+*/
 
-// For DynamoDB, reference the following:
-// https://docs.amplify.aws/guides/functions/dynamodb-from-js-lambda/q/platform/js/#scanning-a-table
-
-// Use this code snippet in your app.
-// If you need more information about configurations or implementing the sample code, visit the AWS docs:
-// https://aws.amazon.com/developers/getting-started/nodejs/
-
-// In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
-// See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-// We rethrow the exception by default.
