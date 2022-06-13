@@ -23,8 +23,7 @@ jobs:
           node-version-file: ".nvmrc"
       - run: npm ci
       - run: npm test
-
-deploy-dev:
+  deploy-dev:
     name: Deploy-dev
     runs-on: "ubuntu-latest"
     steps:
@@ -46,7 +45,7 @@ deploy-dev:
       # sam deploy
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
-deploy-prod:
+  deploy-prod:
     name: Deploy-prod
     runs-on: "ubuntu-latest"
     steps:
