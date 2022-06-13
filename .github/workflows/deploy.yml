@@ -27,7 +27,7 @@ jobs:
 
   deploy-dev:
     name: Deploy-dev
-    uses: ./.github/actions/deploy
+    uses: ./.github/actions/deploy/action.yml
     with:
         ROLE_ARN: ${{ secrets.DEV_ROLE_ARN }}
         SESSIONNAME: DeployToDev
@@ -37,7 +37,7 @@ jobs:
 
   deploy-prod:
     name: Deploy-prod
-    uses: ./.github/actions/deploy
+    uses: ./.github/actions/deploy/action.yml
     with:
         ROLE_ARN: ${{ secrets.PROD_ROLE_ARN }}
         SESSIONNAME: DeployToProd
