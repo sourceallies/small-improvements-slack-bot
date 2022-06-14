@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Small Improvements Slack Bot
+Parameters:
+  SlackTokenSecret:
+    Type: String
+    Description: The slack token
+  SmallImprovementsTokenSecret:
+    Type: String
+    Description: The slack token
+  SlackChannel:
+    Type: String
+    Description: The name of the slack channel to post messages to
+    Default: si-sandbox
+  ScheduleEnabled:
+    Type: String
+    Description: Whether the lambda scheduled trigger is enabled or not
+    Default: false
+
+Resources:
+##########################################################################
+#   Lambda Function                                                      #
+##########################################################################
+  SmallImprovementsBotLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: index.handler
+      Runtime: nodejs16.x
+      Timeout: 300
+      Environment:
+        Variables:
+          SlackChannel: !Ref SlackChannel
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTable
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref SecretTokens
+      Events:
+        CWSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(0 8,20 ? * MON-FRI *)' # this should be 12 hours for prod #cron(0 8,20 * * MON-FRI *) doesn't work # rate(12 hours)
+            Name: SmallImprovementsBotTrigger
+            Description: Event to trigger the small improvements slack bot to post completed goals
+            Enabled: !Ref ScheduleEnabled
+
+
+        
+##########################################################################
+#   DynamoDB                                                            #
+##########################################################################
+  DynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: small-improvements-goals
+      AttributeDefinitions:
+      - AttributeName: "ID"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 5
+      TimeToLiveSpecification:
+        AttributeName: TTL
+        Enabled: true
+  
+##########################################################################
+#   Secrets                                                              #
+##########################################################################
+  SecretTokens:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Secret to store tokens to interact with Small Improvements and Slack
+      Name: SmallImprovemtsSlackBot-Tokens
+      SecretString: !Sub 
+        - '{"SIToken": "${sitoken}", "SlackToken": "${slacktoken}"}'
+        - sitoken: !Ref SmallImprovementsTokenSecret
+          slacktoken: !Ref SlackTokenSecret

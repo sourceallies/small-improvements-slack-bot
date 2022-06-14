@@ -1,0 +1,34 @@
+{
+  "name": "small-improvements-slack-bot",
+  "version": "1.0.0",
+  "description": "Slack bot for integration with Small Improvements API",
+  "main": "src/index.js",
+  "scripts": {
+    "fixlint": "eslint --fix src/*.js test/*.js",
+    "lint": "eslint src/*.js test/*.js",
+    "integration": "jest ./it",
+    "test": "jest ./test",
+    "verify": "npm run lint && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourceallies/small-improvements-slack-bot.git"
+  },
+  "author": "Reece Appling, Joe Danks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sourceallies/small-improvements-slack-bot/issues"
+  },
+  "homepage": "https://github.com/sourceallies/small-improvements-slack-bot#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1150.0"
+  },
+  "devDependencies": {
+    "eslint": "8.17.0",
+    "eslint-config-standard": "17.0.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-n": "15.2.2",
+    "eslint-plugin-promise": "6.0.0",
+    "jest": "28.1.1"
+  }
+}

@@ -1,0 +1,70 @@
+name: Deployment
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - run: npm ci
+      - run: npm test
+  deploy-dev:
+    name: Deploy-dev
+    needs: Build
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - uses: actions/setup-python@v3
+      - uses: aws-actions/setup-sam@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.DEV_ROLE_ARN }}
+          role-session-name: DeployToDev
+      # sam build
+      - run: sam build --use-container
+      # sam deploy
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }}
+
+  deploy-prod:
+    name: Deploy-prod
+    needs: Deploy-dev
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - uses: actions/setup-python@v3
+      - uses: aws-actions/setup-sam@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.PROD_ROLE_ARN }}
+          role-session-name: DeployToProd
+      # sam build
+      - run: sam build --use-container
+      # sam deploy
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }}

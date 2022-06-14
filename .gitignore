@@ -1,3 +1,10 @@
+# Custom
+.git
+test.json
+.DS_Store
+notCommitted.js
+testData.json
+
 # Logs
 logs
 *.log
@@ -102,3 +109,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# AWS SAM
+.aws-sam/
