@@ -6,8 +6,7 @@ const messageVariables = {
 };
 
 // Post a message to a channel your app is in using ID and message text
-async function slackPost(authToken, channelName, objective, status, email) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
-  const formattedMessage = await formatSlackMessage(objective, status, email, authToken);//Formatted message
+async function slackPost(authToken, channelName, formattedMessage) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
   formattedMessage.channel = '' + channelName;
   formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
   formattedMessage.username = 'SAI SI Bot';
@@ -46,13 +45,10 @@ async function slackPost(authToken, channelName, objective, status, email) { // 
   });
 }
 
-async function formatSlackMessage(objectiveItem, newStatus, email, token) { // activity?
+async function formatSlackMessage(objectiveItem, newStatus, slackUID) { // activity?
   const toSend = messageVariables;
-  const slackUID = await getSlackID(email, token);
-  
   toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
-  // return JSON format
-  return toSend;
+  return toSend;// return JSON format
 }
 
 function getSlackID(email, token){
@@ -91,6 +87,19 @@ function getSlackID(email, token){
   });
 }
 
+async function postObjective(token, channelName, objective, newStatus, email){
+  /* 
+    Get Slack ID,
+    Format message,
+    Post
+  */
+  const slackID = await getSlackID(email,token);
+  const formattedMessage = await formatSlackMessage(objective, newStatus, slackID);
+  let postResp = await slackPost(token, channelName, formattedMessage)
+  //return postResp;
+}
+
+exports.postObjective = postObjective;
 exports.formatSlackMessage = formatSlackMessage;
 exports.slackPost = slackPost;
 exports.getSlackID = getSlackID;

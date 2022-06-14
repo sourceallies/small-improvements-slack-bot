@@ -1,7 +1,8 @@
 exports.createActivity = (activityProps, objectiveProps) => {
   return {
     actor: {
-      firstName: 'Developer'
+      firstName: 'Developer',
+      email: 'email@email.com' //--------------------------------------------
     },
     occurredAt: 1651856682326,
     change: {
@@ -35,7 +36,8 @@ exports.createActivity = (activityProps, objectiveProps) => {
         description: '<!--MARKUP_VERSION:v3--><p>Description</p>',
         dueDate: '2022-06-30T05:00:00.000Z',
         owner: {
-          firstName: 'Developer'
+          firstName: 'Developer',
+          id: 'V*jArA9pQbaK0U7grc9frw'
         },
         visibility: 'PUBLIC',
         visibleTo: [],

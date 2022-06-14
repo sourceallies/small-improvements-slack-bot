@@ -7,7 +7,9 @@ describe('Slack Requests', () => {
     channelID,
     responseBody,
     mockObjective,
-    mockStatus;
+    mockStatus,
+    mockEmail,
+    mockSlackID;
 
   beforeEach(() => {
     token = 'token';
@@ -17,6 +19,8 @@ describe('Slack Requests', () => {
       owner: { name: 'Reece' }
     };
     mockStatus = 'Achieved';
+    mockSlackID = 'Reece';
+    mockEmail = 'email@email.com';
     responseBody = `{
       ok: true,
       channel: 'C0179PL5K8E',
@@ -50,7 +54,7 @@ describe('Slack Requests', () => {
   });
 
   test('Formats messages correctly', async () => {
-    const formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
+    const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID);
     expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
   });
 
@@ -69,8 +73,11 @@ describe('Slack Requests', () => {
       };
     });
 
-    const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
-    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);
+    /* const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus, mockEmail); */
+    const response = await slackClient.postObjective(token, channelID, mockObjective, mockStatus, mockEmail);
+    /*
+    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus, mockEmail, token);
+    */
     const expectedOptions = {
       hostname: 'sourceallies.slack.com',
       port: 443,
