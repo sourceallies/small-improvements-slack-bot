@@ -45,7 +45,7 @@ jobs:
       # sam build
       - run: sam build --use-container
       # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }}
 
   deploy-prod:
     name: Deploy-prod
@@ -68,4 +68,4 @@ jobs:
       # sam build
       - run: sam build --use-container
       # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }}

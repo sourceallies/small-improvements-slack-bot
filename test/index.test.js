@@ -24,6 +24,9 @@ describe('index', () => {
   });
 
   beforeEach(() => {
+    slackChannel = 'si-sandbox';
+    process.env.SlackChannel = slackChannel;
+
     eventDateString = '2022-06-02T00:00:00Z';
     event = {
       time: eventDateString
@@ -69,8 +72,6 @@ describe('index', () => {
         N: (activityDateMillis / 1000) + (7 * 24 * 60 * 60)
       }
     }];
-
-    slackChannel = 'si-sandbox';
   });
 
   test('should not post previously existing objective', async () => {

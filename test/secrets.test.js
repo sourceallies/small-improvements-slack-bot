@@ -1,5 +1,5 @@
 require('aws-sdk');
-const mockSecretName = 'SIBot-Tokens';
+const mockSecretName = 'SmallImprovemtsSlackBot-Tokens';
 const mockGetSecretsPromise = jest.fn();
 const mockGetSecretValue = jest.fn(() => ({
   promise: mockGetSecretsPromise

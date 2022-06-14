@@ -5,7 +5,6 @@ const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
 const slackClient = require('./slack');
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
-const slackChannel = 'si-sandbox';
 
 /*
   Achieved status == 100
@@ -31,6 +30,7 @@ async function main(event, context) {
         Post message to Slack
         Put record in dynamodb
   */
+  const slackChannel = process.env.SlackChannel;
   const secrets = await secretsClient.getSecret();
   const objectiveActivities = await smallImprovementsClient.getObjectives(secrets.SIToken);
   const recentlyCompletedObjectives = filterActivities(objectiveActivities, new Date(event.time));

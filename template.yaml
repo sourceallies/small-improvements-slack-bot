@@ -1,6 +1,18 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Small Improvements Slack Bot
+Parameters:
+  SlackTokenSecret:
+    Type: String
+    Description: The slack token
+  SmallImprovementsTokenSecret:
+    Type: String
+    Description: The slack token
+  SlackChannel:
+    Type: String
+    Description: The name of the slack channel to post messages to
+    Default: si-sandbox
+
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
@@ -14,12 +26,12 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
-          DatabaseTable: !Ref DynamoTable
+          SlackChannel: !Ref SlackChannel
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DynamoTable
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: 'arn:aws:secretsmanager:us-east-1:729161019481:secret:SIBot-Tokens-J4t6Af'
+            SecretArn: !Ref SecretTokens
       Events:
         CWSchedule:
           Type: Schedule
@@ -52,3 +64,15 @@ Resources:
         AttributeName: TTL
         Enabled: true
   
+##########################################################################
+#   Secrets                                                              #
+##########################################################################
+  SecretTokens:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Secret to store tokens to interact with Small Improvements and Slack
+      Name: SmallImprovemtsSlackBot-Tokens
+      SecretString: !Sub 
+        - '{"SIToken": "${sitoken}", "SlackToken": "${slacktoken}"}'
+        - sitoken: !Ref SmallImprovementsTokenSecret
+        - slacktoken: !Ref SlackTokenSecret

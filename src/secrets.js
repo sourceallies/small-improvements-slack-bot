@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const region = 'us-east-1';
-const secretName = 'SIBot-Tokens';
+const secretName = 'SmallImprovemtsSlackBot-Tokens';
 
 async function getSecret() {
   const client = new AWS.SecretsManager({
