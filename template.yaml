@@ -17,6 +17,11 @@ Parameters:
     Description: Whether the lambda scheduled trigger is enabled or not
     Default: false
 
+Conditions:
+  IsScheduleEnabled: !Equals
+    - true
+    - !Ref ScheduleEnabled
+
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
@@ -41,7 +46,7 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: !If
-              - ScheduleEnabled
+              - IsScheduleEnabled
               - 'cron(0 13-23 ? * MON-FRI *)' # run at 13-23 UTC Mon-Fri (8am-6pm Central)
               - 'cron(0 1 1 1 ? 1970)' # Never run
             Name: SmallImprovementsBotTrigger
