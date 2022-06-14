@@ -1,5 +1,6 @@
 const slackClient = require('../src/slack');
 const httpsMock = require('https');
+const querystring = require('node:querystring');
 jest.mock('https');
 
 describe('Slack Requests', () => {
@@ -7,7 +8,9 @@ describe('Slack Requests', () => {
     channelID,
     responseBody,
     mockObjective,
-    mockStatus;
+    mockStatus,
+    mockEmail,
+    mockSlackID;
 
   beforeEach(() => {
     token = 'token';
@@ -17,6 +20,7 @@ describe('Slack Requests', () => {
       owner: { name: 'Reece' }
     };
     mockStatus = 'Achieved';
+    mockSlackID = 'Reece';
     responseBody = `{
       ok: true,
       channel: 'C0179PL5K8E',
@@ -48,65 +52,110 @@ describe('Slack Requests', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-
-  test('Formats messages correctly', async () => {
-    const formattedText = slackClient.formatSlackMessage(mockObjective, mockStatus);
-    expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
+  describe('Slack formatting', () => {
+    test('Formats messages correctly', async () => {
+      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID);
+      expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
+    });
   });
-
-  test('Should be able to post messages', async () => {
-    const writeMock = jest.fn();
-    const endMock = jest.fn();
-    httpsMock.request = jest.fn((postOption, requestCallBack) => {
-      requestCallBack({
-        on: (data, dataCallBack) => dataCallBack(Buffer.from(responseBody, 'utf8')),
-        statusCode: 200
+  describe('Slack Lookup', () => {
+    beforeEach(() => {
+      mockSlackID = 'Reece';
+      token = 'token';
+      responseBody = `{
+        "user":{
+          "id":"${mockSlackID}"
+        }
+      }`;
+    });
+    test('Should be able to look up users', async () => {
+      const writeMock = jest.fn();
+      const endMock = jest.fn();
+      httpsMock.request = jest.fn((postOption, requestCallBack) => {
+        requestCallBack({
+          on: (data, dataCallBack) => dataCallBack(Buffer.from(responseBody, 'utf8')),
+          statusCode: 200
+        });
+        return {
+          write: writeMock,
+          end: endMock,
+          on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+        };
       });
-      return {
-        write: writeMock,
-        end: endMock,
-        on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+
+      const response = await slackClient.getSlackID(mockEmail, token);
+      const expectedOptions = {
+        hostname: 'sourceallies.slack.com',
+        port: 443,
+        path: '/api/users.lookupByEmail',
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       };
+      expect(response).toStrictEqual(mockSlackID);
+      expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
+      expect(endMock).toHaveBeenCalled();
+      expect(writeMock).toHaveBeenCalledWith(querystring.stringify({ email: mockEmail }));
+    });
+  });
+  describe('SlackPost', () => {
+    beforeEach(() => {
+
+    });
+    test('Should be able to post messages', async () => {
+      const writeMock = jest.fn();
+      const endMock = jest.fn();
+      const formattedMessage = {};
+      httpsMock.request = jest.fn((postOption, requestCallBack) => {
+        requestCallBack({
+          on: (data, dataCallBack) => dataCallBack(Buffer.from(responseBody, 'utf8')),
+          statusCode: 200
+        });
+        return {
+          write: writeMock,
+          end: endMock,
+          on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+        };
+      });
+
+      const response = await slackClient.slackPost(token, channelID, formattedMessage);
+      const expectedOptions = {
+        hostname: 'sourceallies.slack.com',
+        port: 443,
+        path: '/api/chat.postMessage',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+      expect(response).toStrictEqual(responseBody);
+      expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
+      expect(endMock).toHaveBeenCalled();
+      expect(writeMock).toHaveBeenCalledWith(JSON.stringify(
+        {
+          ...formattedMessage,
+          channel: channelID
+        }
+      ));
     });
 
-    const response = await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
-    const formattedMessage = slackClient.formatSlackMessage(mockObjective, mockStatus);
-    const expectedOptions = {
-      hostname: 'sourceallies.slack.com',
-      port: 443,
-      path: '/api/chat.postMessage',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    };
-    expect(response).toStrictEqual(responseBody);
-    expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
-    expect(endMock).toHaveBeenCalled();
-    expect(writeMock).toHaveBeenCalledWith(JSON.stringify(
-      {
-        ...formattedMessage,
-        channel: channelID,
-        icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
-        username: 'SAI SI Bot',
-        link_names: 1
-      }
-    ));
-  });
+    test('Should reject any non-200 responses', async () => {
+      httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
+        on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
+        statusCode: 403
+      }));
 
-  test('Should reject any non-200 responses', async () => {
-    httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
-      on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
-      statusCode: 403
-    }));
+      let actualError;
+      try {
+        await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
+      } catch (e) { actualError = e; }
 
-    let actualError;
-    try {
-      await slackClient.slackPost(token, channelID, mockObjective, mockStatus);
-    } catch (e) { actualError = e; }
-
-    expect(actualError).toStrictEqual(new Error('Could not post to Slack: 403'));
+      expect(actualError).toStrictEqual(new Error('Could not post to Slack: 403'));
+    });
   });
 });

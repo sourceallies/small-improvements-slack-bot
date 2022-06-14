@@ -3,7 +3,7 @@
 const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
-const slackClient = require('./slack');
+const slackService = require('./slack-service');
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
 
 /*
@@ -39,11 +39,13 @@ async function main(event, context) {
     recentlyCompletedObjectives.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
       if (!exisingEntry?.length) {
-        await slackClient.slackPost(
+        const SIEmail = await smallImprovementsClient.getEmail(activity.content.objective.owner.id, secrets.SIToken);
+        await slackService.postObjective(
           secrets.SlackToken,
           slackChannel,
           activity.content.objective,
-          activity.change.newStatus.description
+          activity.change.newStatus.description,
+          SIEmail
         );
         await dynamodbClient.insertRecord(activity);
         return activity.content.objective;
@@ -53,7 +55,7 @@ async function main(event, context) {
   );
   const successfulPosts = results.filter(x => x.value);
   const failedPosts = results.filter(x => x.status === 'rejected');
-  failedPosts.forEach(fail => console.error(fail.reason));
+  failedPosts.forEach(fail => console.log(fail.reason));
   const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
   console.log(message);
   return message;
@@ -61,16 +63,3 @@ async function main(event, context) {
 
 exports.handler = main;
 exports.main = main;
-
-/*
-      Crontab rule for cloudwatch
-        cron(0 8,20 * * MON-FRI *);//?
-        8,20 = 3,10 for Central
-        Run on the 0th minute
-        on hours 8 and 20 (UTC)
-        every week,
-        of every month,
-        Monday through friday,
-        on all years
-*/
-

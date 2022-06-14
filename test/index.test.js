@@ -2,13 +2,13 @@ const index = require('../src/index');
 const secretsClient = require('../src/secrets');
 const smallImprovementsClient = require('../src/small-improvements');
 const dynamodbClient = require('../src/dynamodb');
-const slackClient = require('../src/slack');
+const slackClient = require('../src/slack-service');
 const dataFactory = require('./data-factory');
 
 jest.mock('../src/secrets');
 jest.mock('../src/small-improvements');
 jest.mock('../src/dynamodb');
-jest.mock('../src/slack');
+jest.mock('../src/slack-service');
 
 describe('index', () => {
   let eventDateString,
@@ -17,7 +17,8 @@ describe('index', () => {
     activities,
     dynamoRecords,
     objectiveId,
-    slackChannel;
+    slackChannel,
+    mockEmail;
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -36,6 +37,8 @@ describe('index', () => {
       SIToken: 'small-improvements-token',
       SlackToken: 'slack-token'
     };
+
+    mockEmail = 'email@email.com';
 
     objectiveId = 'objective-id';
 
@@ -134,20 +137,22 @@ describe('index', () => {
 
     secretsClient.getSecret.mockResolvedValue(secrets);
     smallImprovementsClient.getObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
     dynamodbClient.insertRecord.mockResolvedValue({});
-    slackClient.slackPost.mockResolvedValue({});
+    slackClient.postObjective.mockResolvedValue({});
 
     const result = await index.handler(event);
 
     expect(result).toBe('Finished 1 successfully. Failed 0');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
-    expect(slackClient.slackPost).toHaveBeenCalledWith(
+    expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
       activities.items[0].items[0].activities[0].content.objective,
-      activities.items[0].items[0].activities[0].change.newStatus.description
+      activities.items[0].items[0].activities[0].change.newStatus.description,
+      mockEmail
     );
   });
 
@@ -162,8 +167,9 @@ describe('index', () => {
 
     secretsClient.getSecret.mockResolvedValue(secrets);
     smallImprovementsClient.getObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
-    slackClient.slackPost
+    slackClient.postObjective
       .mockRejectedValueOnce(new Error('failed to post to slack'))
       .mockResolvedValue({});
     dynamodbClient.insertRecord.mockResolvedValue({});
@@ -175,17 +181,12 @@ describe('index', () => {
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(secondObjectiveId);
     expect(dynamodbClient.insertRecord).not.toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1]);
-    expect(slackClient.slackPost).toHaveBeenCalledWith(
-      secrets.SlackToken,
-      slackChannel,
-      activities.items[0].items[0].activities[0].content.objective,
-      activities.items[0].items[0].activities[0].change.newStatus.description
-    );
-    expect(slackClient.slackPost).toHaveBeenCalledWith(
+    expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
       activities.items[0].items[0].activities[1].content.objective,
-      activities.items[0].items[0].activities[1].change.newStatus.description
+      activities.items[0].items[0].activities[1].change.newStatus.description,
+      mockEmail
     );
   });
 });
