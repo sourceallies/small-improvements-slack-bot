@@ -40,10 +40,13 @@ Resources:
         CWSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'cron(0 13-23 ? * MON-FRI *)' # run at 13-23 UTC Mon-Fri (8am-6pm Central)
+            Schedule: !If
+              - ScheduleEnabled
+              - 'cron(0 13-23 ? * MON-FRI *)' # run at 13-23 UTC Mon-Fri (8am-6pm Central)
+              - 'cron(0 1 1 1 ? 1970)' # Never run
             Name: SmallImprovementsBotTrigger
             Description: Event to trigger the small improvements slack bot to post completed goals
-            Enabled: !Equals [true, !Ref ScheduleEnabled]
+            Enabled: true
 
 
         
