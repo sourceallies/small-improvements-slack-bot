@@ -24,7 +24,7 @@ Resources:
         CWSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'rule(12 hours)' # this should be 12 hours for prod #rule(12 hours)
+            Schedule: 'rate(12 hours)' # this should be 12 hours for prod #rule(12 hours)
             Name: SmallImprovementsBotTrigger
             Description: Event to trigger the small improvements slack bot to post completed goals
             Enabled: false # Needs to be true in prod
