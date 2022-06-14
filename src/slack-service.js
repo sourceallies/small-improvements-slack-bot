@@ -1,4 +1,4 @@
-const slackClient = require('../src/slack');
+const slackClient = require('./slack');
 
 // Get Slack ID, Format Message, Post
 async function postObjective(token, channelName, objective, newStatus, email) {

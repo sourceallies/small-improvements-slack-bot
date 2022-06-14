@@ -3,7 +3,7 @@
 const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
-const postClient = require('../src/slackpost');
+const slackService = require('./slack-service');
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
 
 /*
@@ -40,7 +40,7 @@ async function main(event, context) {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
       if (!exisingEntry?.length) {
         const SIEmail = await smallImprovementsClient.getEmail(activity.content.objective.owner.id, secrets.SIToken);
-        await postClient.postObjective(
+        await slackService.postObjective(
           secrets.SlackToken,
           slackChannel,
           activity.content.objective,

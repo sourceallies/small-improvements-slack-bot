@@ -2,13 +2,13 @@ const index = require('../src/index');
 const secretsClient = require('../src/secrets');
 const smallImprovementsClient = require('../src/small-improvements');
 const dynamodbClient = require('../src/dynamodb');
-const slackClient = require('../src/slackpost');
+const slackClient = require('../src/slack-service');
 const dataFactory = require('./data-factory');
 
 jest.mock('../src/secrets');
 jest.mock('../src/small-improvements');
 jest.mock('../src/dynamodb');
-jest.mock('../src/slackpost');
+jest.mock('../src/slack-service');
 
 describe('index', () => {
   let eventDateString,
@@ -140,7 +140,6 @@ describe('index', () => {
     smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
     dynamodbClient.insertRecord.mockResolvedValue({});
-    // slackClient.slackPost.mockResolvedValue({});
     slackClient.postObjective.mockResolvedValue({});
 
     const result = await index.handler(event);
@@ -155,14 +154,6 @@ describe('index', () => {
       activities.items[0].items[0].activities[0].change.newStatus.description,
       mockEmail
     );
-    /*
-    expect(slackClient.slackPost).toHaveBeenCalledWith(
-      secrets.SlackToken,
-      slackChannel,
-      activities.items[0].items[0].activities[0].content.objective,
-      activities.items[0].items[0].activities[0].change.newStatus.description,
-    );
-    */
   });
 
   test('should complete other posts after failure', async () => {
@@ -181,11 +172,6 @@ describe('index', () => {
     slackClient.postObjective
       .mockRejectedValueOnce(new Error('failed to post to slack'))
       .mockResolvedValue({});
-    /*
-    slackClient.slackPost
-      .mockRejectedValueOnce(new Error('failed to post to slack'))
-      .mockResolvedValue({});
-      */
     dynamodbClient.insertRecord.mockResolvedValue({});
 
     const result = await index.handler(event);
@@ -195,12 +181,6 @@ describe('index', () => {
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(secondObjectiveId);
     expect(dynamodbClient.insertRecord).not.toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1]);
-    /* expect(slackClient.slackPost).toHaveBeenCalledWith(
-      secrets.SlackToken,
-      slackChannel,
-      activities.items[0].items[0].activities[0].content.objective,
-      activities.items[0].items[0].activities[0].change.newStatus.description
-    ); */
     expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,

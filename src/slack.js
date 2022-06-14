@@ -45,7 +45,7 @@ async function slackPost(authToken, channelName, formattedMessage) { // postData
   });
 }
 
-async function formatSlackMessage(objectiveItem, newStatus, slackUID) { // activity?
+async function formatSlackMessage(objectiveItem, newStatus, slackUID) {
   const toSend = messageVariables;
   toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
   return toSend;// return JSON format

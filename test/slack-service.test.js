@@ -1,4 +1,4 @@
-const postClient = require('../src/slackpost');
+const postClient = require('../src/slack-service');
 const slackClient = require('../src/slack');
 jest.mock('../src/slack');
 
