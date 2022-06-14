@@ -1,5 +1,7 @@
 # Small Improvements Slack Bot
 
+![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/addPic/image.jpg?raw=true)
+
 ## Development
 
 ### Deployment
