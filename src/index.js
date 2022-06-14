@@ -63,16 +63,3 @@ async function main(event, context) {
 
 exports.handler = main;
 exports.main = main;
-
-/*
-      Crontab rule for cloudwatch
-        cron(0 8,20 * * MON-FRI *);//?
-        8,20 = 3,10 for Central
-        Run on the 0th minute
-        on hours 8 and 20 (UTC)
-        every week,
-        of every month,
-        Monday through friday,
-        on all years
-*/
-

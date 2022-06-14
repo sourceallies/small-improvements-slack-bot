@@ -1,5 +1,5 @@
 const https = require('https');
-var querystring = require('Node:querystring');
+var querystring = require('node:querystring');
 const messageVariables = {
   username: 'Small Improvements Update',
   icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png'
@@ -7,7 +7,7 @@ const messageVariables = {
 
 // Post a message to a channel your app is in using ID and message text
 async function slackPost(authToken, channelName, objective, status, email) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
-  const formattedMessage = formatSlackMessage(objective, status, email);//Formatted message
+  const formattedMessage = await formatSlackMessage(objective, status, email, authToken);//Formatted message
   formattedMessage.channel = '' + channelName;
   formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
   formattedMessage.username = 'SAI SI Bot';
@@ -46,15 +46,16 @@ async function slackPost(authToken, channelName, objective, status, email) { // 
   });
 }
 
-function formatSlackMessage(objectiveItem, newStatus, email) { // activity?
+async function formatSlackMessage(objectiveItem, newStatus, email, token) { // activity?
   const toSend = messageVariables;
-  const slackUID = await getSlackID(email);
+  const slackUID = await getSlackID(email, token);
+  
   toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
   // return JSON format
   return toSend;
 }
 
-function getSlackID(email){
+function getSlackID(email, token){
   const options = {
     hostname: 'sourceallies.slack.com',
     port: 443,
