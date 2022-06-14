@@ -39,11 +39,13 @@ async function main(event, context) {
     recentlyCompletedObjectives.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
       if (!exisingEntry?.length) {
+        let SIEmail = await smallImprovementsClient.getEmail(activity.content.owner.id);
         await slackClient.slackPost(
           secrets.SlackToken,
           slackChannel,
           activity.content.objective,
-          activity.change.newStatus.description
+          activity.change.newStatus.description,
+          SIEmail
         );
         await dynamodbClient.insertRecord(activity);
         return activity.content.objective;

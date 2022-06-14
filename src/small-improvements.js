@@ -35,4 +35,41 @@ function getObjectives(token) {
   });
 }
 
+function getEmail(SIUID){//SIUID is in the form: V*jArA9pQbaK0U7grc9frw
+  const options = {
+    hostname: 'allies.small-improvements.com',
+    port: 443,
+    path: '/api/v2/users/'+SIUID,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+      'User-Agent': 'SIBot' /* IF YOU REMOVE THE USER AGENT LINE I (THIS BOT) WILL BREAK */
+    }
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, res => {
+      let responsePayload = '';
+      if (res.statusCode !== 200) {
+        console.log(`status logged ${res.statusCode}`);
+        reject(new Error(`Could not get objectives: ${res.statusCode}`));
+        return;
+      }
+      res.on('data', d => {
+        responsePayload += d;
+      });
+      res.on('close', () => {
+        resolve(JSON.parse(responsePayload).email);
+      });
+    });
+    req.on('error', err => {
+      reject(new Error(`https error: ${err}`));
+    });
+    req.end();
+  });
+}
+
+
 exports.getObjectives = getObjectives;
+exports.getEmail = getEmail;
