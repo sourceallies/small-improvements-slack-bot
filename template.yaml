@@ -17,11 +17,6 @@ Parameters:
     Description: Whether the lambda scheduled trigger is enabled or not
     Default: false
 
-Conditions:
-  IsScheduleEnabled: !Equals
-    - true
-    - !Ref ScheduleEnabled
-
 Resources:
 ##########################################################################
 #   Lambda Function                                                      #
@@ -48,7 +43,7 @@ Resources:
             Schedule: 'cron(0 13-23 ? * MON-FRI *)' # run at 13-23 UTC Mon-Fri (8am-6pm Central)
             Name: SmallImprovementsBotTrigger
             Description: Event to trigger the small improvements slack bot to post completed goals
-            Enabled: !Ref IsScheduleEnabled
+            Enabled: !Equals [true, !Ref ScheduleEnabled]
 
 
         
