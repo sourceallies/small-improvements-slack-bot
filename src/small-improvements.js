@@ -35,7 +35,7 @@ function getObjectives(token) {
   });
 }
 
-function getEmail(SIUID){//SIUID is in the form: V*jArA9pQbaK0U7grc9frw
+function getEmail(SIUID){//SIUID (Small Improvements User ID) is in the form: V*jArA9pQbaK0U7grc9frw
   const options = {
     hostname: 'allies.small-improvements.com',
     port: 443,

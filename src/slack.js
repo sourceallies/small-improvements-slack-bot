@@ -1,4 +1,5 @@
 const https = require('https');
+var querystring = require('Node:querystring');
 const messageVariables = {
   username: 'Small Improvements Update',
   icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png'
@@ -6,7 +7,7 @@ const messageVariables = {
 
 // Post a message to a channel your app is in using ID and message text
 async function slackPost(authToken, channelName, objective, status, email) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
-  const formattedMessage = formatSlackMessage(objective, status, email);//Formatted message, may need refactoring for IDs?-------
+  const formattedMessage = formatSlackMessage(objective, status, email);//Formatted message
   formattedMessage.channel = '' + channelName;
   formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
   formattedMessage.username = 'SAI SI Bot';
@@ -61,8 +62,8 @@ function getSlackID(email){
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-      email
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`
     }
   };
 
@@ -84,6 +85,7 @@ function getSlackID(email){
     req.on('error', err => {
       reject(new Error(`https error: ${err}`));
     });
+    req.write(querystring.stringify({email}));
     req.end();
   });
 }
