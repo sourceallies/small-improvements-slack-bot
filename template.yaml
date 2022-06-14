@@ -12,6 +12,10 @@ Parameters:
     Type: String
     Description: The name of the slack channel to post messages to
     Default: si-sandbox
+  ScheduleEnabled:
+    Type: String
+    Description: Whether the lambda scheduled trigger is enabled or not
+    Default: false
 
 Resources:
 ##########################################################################
@@ -39,7 +43,7 @@ Resources:
             Schedule: 'cron(0 8,20 ? * MON-FRI *)' # this should be 12 hours for prod #cron(0 8,20 * * MON-FRI *) doesn't work # rate(12 hours)
             Name: SmallImprovementsBotTrigger
             Description: Event to trigger the small improvements slack bot to post completed goals
-            Enabled: false # Needs to be true in prod
+            Enabled: !Ref ScheduleEnabled
 
 
         
