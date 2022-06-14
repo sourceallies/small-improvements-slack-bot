@@ -2,13 +2,13 @@ const index = require('../src/index');
 const secretsClient = require('../src/secrets');
 const smallImprovementsClient = require('../src/small-improvements');
 const dynamodbClient = require('../src/dynamodb');
-const slackClient = require('../src/slack');
+const slackClient = require('../src/slackpost');
 const dataFactory = require('./data-factory');
 
 jest.mock('../src/secrets');
 jest.mock('../src/small-improvements');
 jest.mock('../src/dynamodb');
-jest.mock('../src/slack');
+jest.mock('../src/slackpost');
 
 describe('index', () => {
   let eventDateString,
@@ -137,9 +137,10 @@ describe('index', () => {
 
     secretsClient.getSecret.mockResolvedValue(secrets);
     smallImprovementsClient.getObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
     dynamodbClient.insertRecord.mockResolvedValue({});
-    //slackClient.slackPost.mockResolvedValue({});
+    // slackClient.slackPost.mockResolvedValue({});
     slackClient.postObjective.mockResolvedValue({});
 
     const result = await index.handler(event);
@@ -154,7 +155,7 @@ describe('index', () => {
       activities.items[0].items[0].activities[0].change.newStatus.description,
       mockEmail
     );
-    /* 
+    /*
     expect(slackClient.slackPost).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
@@ -175,6 +176,7 @@ describe('index', () => {
 
     secretsClient.getSecret.mockResolvedValue(secrets);
     smallImprovementsClient.getObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
     slackClient.postObjective
       .mockRejectedValueOnce(new Error('failed to post to slack'))
@@ -198,7 +200,7 @@ describe('index', () => {
       slackChannel,
       activities.items[0].items[0].activities[0].content.objective,
       activities.items[0].items[0].activities[0].change.newStatus.description
-    );*/
+    ); */
     expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,

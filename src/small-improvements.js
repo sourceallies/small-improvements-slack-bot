@@ -35,11 +35,11 @@ function getObjectives(token) {
   });
 }
 
-function getEmail(SIUID){//SIUID (Small Improvements User ID) is in the form: V*jArA9pQbaK0U7grc9frw
+function getEmail(SIUID, token) { // SIUID (Small Improvements User ID) is in the form: V*jArA9pQbaK0U7grc9frw
   const options = {
     hostname: 'allies.small-improvements.com',
     port: 443,
-    path: '/api/v2/users/'+SIUID,
+    path: '/api/v2/users/' + SIUID,
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -69,7 +69,6 @@ function getEmail(SIUID){//SIUID (Small Improvements User ID) is in the form: V*
     req.end();
   });
 }
-
 
 exports.getObjectives = getObjectives;
 exports.getEmail = getEmail;

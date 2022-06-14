@@ -3,7 +3,7 @@
 const secretsClient = require('./secrets');
 const smallImprovementsClient = require('./small-improvements');
 const dynamodbClient = require('./dynamodb');
-const slackClient = require('./slack');
+const postClient = require('../src/slackpost');
 const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
 
 /*
@@ -39,8 +39,8 @@ async function main(event, context) {
     recentlyCompletedObjectives.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
       if (!exisingEntry?.length) {
-        let SIEmail = await smallImprovementsClient.getEmail(activity.content.objective.owner.id);
-        await slackClient.postObjective(
+        const SIEmail = await smallImprovementsClient.getEmail(activity.content.objective.owner.id, secrets.SIToken);
+        await postClient.postObjective(
           secrets.SlackToken,
           slackChannel,
           activity.content.objective,
@@ -55,7 +55,7 @@ async function main(event, context) {
   );
   const successfulPosts = results.filter(x => x.value);
   const failedPosts = results.filter(x => x.status === 'rejected');
-  failedPosts.forEach(fail => console.error(fail.reason));
+  failedPosts.forEach(fail => console.log(fail.reason));
   const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
   console.log(message);
   return message;

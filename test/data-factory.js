@@ -1,8 +1,7 @@
 exports.createActivity = (activityProps, objectiveProps) => {
   return {
     actor: {
-      firstName: 'Developer',
-      email: 'email@email.com' //--------------------------------------------
+      firstName: 'Developer'
     },
     occurredAt: 1651856682326,
     change: {
@@ -37,7 +36,8 @@ exports.createActivity = (activityProps, objectiveProps) => {
         dueDate: '2022-06-30T05:00:00.000Z',
         owner: {
           firstName: 'Developer',
-          id: 'V*jArA9pQbaK0U7grc9frw'
+          id: 'V*jArA9pQbaK0U7grc9frw',
+          email: 'rappling@sourceallies.com'
         },
         visibility: 'PUBLIC',
         visibleTo: [],
