@@ -1,16 +1,15 @@
 const https = require('https');
 const querystring = require('node:querystring');
 const messageVariables = {
-  username: 'Small Improvements Update',
-  icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png'
+  username: 'Mastery Path Bot',
+  icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
+  link_names: 1
 };
 
 // Post a message to a channel your app is in using ID and message text
 async function slackPost(authToken, channelName, formattedMessage) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
   formattedMessage.channel = '' + channelName;
-  formattedMessage.icon_url = 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png';
-  formattedMessage.username = 'Mastery Path Bot';
-  formattedMessage.link_names = 1;
+  
   const options = {
     hostname: 'sourceallies.slack.com',
     port: 443,
