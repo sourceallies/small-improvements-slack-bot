@@ -139,10 +139,7 @@ describe('Slack Requests', () => {
       expect(writeMock).toHaveBeenCalledWith(JSON.stringify(
         {
           ...formattedMessage,
-          channel: channelID,
-          icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
-          username: 'Mastery Path Bot',
-          link_names: 1
+          channel: channelID
         }
       ));
     });
