@@ -11,6 +11,8 @@ permissions:
   contents: read
   packages: write
 
+concurrency: deploy
+
 jobs:
   build:
     name: Build
