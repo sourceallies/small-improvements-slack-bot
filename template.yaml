@@ -75,4 +75,4 @@ Resources:
       SecretString: !Sub 
         - '{"SIToken": "${sitoken}", "SlackToken": "${slacktoken}"}'
         - sitoken: !Ref SmallImprovementsTokenSecret
-        - slacktoken: !Ref SlackTokenSecret
+          slacktoken: !Ref SlackTokenSecret
