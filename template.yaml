@@ -5,9 +5,11 @@ Parameters:
   SlackTokenSecret:
     Type: String
     Description: The slack token
+    NoEcho: true
   SmallImprovementsTokenSecret:
     Type: String
     Description: The slack token
+    NoEcho: true
   SlackChannel:
     Type: String
     Description: The name of the slack channel to post messages to
