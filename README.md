@@ -16,7 +16,7 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ### Credentials
 
-This project utilizes credentials stored in GitHub Secrets. The deployment workflow uses IAM Role ARNs with the AWS CLI to Configure Credentials, and API tokens are injected into SAM as parameter overrides. The aformentioned tokens are utilized in such a way that they make it to the final lambda function as environment variables without being echoed anywhere in the codebase, AWS logs, or Actions logs. If either API token becomes invalid, review the links [below][keys] to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
+This project utilizes credentials stored in GitHub Secrets. The deployment workflow uses IAM Role ARNs with the AWS CLI to Configure Credentials, and API tokens are injected into SAM as parameter overrides. The aformentioned tokens are utilized in such a way that they make it to the final lambda function as environment variables without being echoed anywhere in the codebase, AWS logs, or Actions logs. If either API token becomes invalid, review the links [below](#smallimprovements) to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
 
 There are four sets of credentials used in this project as GitHub Secrets:
 | Secret Name       | Secret Description                                |
@@ -34,7 +34,7 @@ DEV_ROLE_ARN and PROD_ROLE_ARN are roles in Dev and Prod respectively. They must
 
 Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but *will* work 
 
-#### [Small Improvements][keys]
+#### Small Improvements
 
 Anyone's Small Improvement's personal access token may be used.
 [Generate personal access token](https://resources.small-improvements.com/knowledge-base/small-improvements-rest-api/)
