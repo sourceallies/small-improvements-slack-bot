@@ -16,9 +16,21 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ### Credentials
 
-There are two sets of credentials. A personal access token from Small Improvements and the Slack Bot's OAuth token.
+There are four sets of credentials used in this project as GitHub Secrets:
+| Secret Name       | Secret Description                                |
+| ----------------- |:-------------------------------------------------:|
+| **SITOKEN**       | A personal access token from Small Improvements   | 
+| **SLACKTOKEN**    | The Slack Bot's OAuth token                       |
+| **DEV_ROLE_ARN**  | The ARN of the IAM role used in deploying to Dev  |
+| **PROD_ROLE_ARN** | The ARN of the IAM role used in deploying to Prod |
 
-Credentials are stored in Secrets Manager. It is managed manually to keep secrets out of the code base. If either token becomes invalid, review the links below to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
+Credentials are stored in GitHub Secrets. These secrets are injected into SAM as parameter overrides in such a way that they make it to the final lambda function as environment variables without being echoed anywhere in the codebase, AWS logs, or Actions logs. If either token becomes invalid, review the links below to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
+
+#### AWS IAM ROLES
+
+DEV_ROLE_ARN and PROD_ROLE_ARN are roles in Dev and Prod respectively. They must have all permissions required to deploy the application in their respective environments.
+
+Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but *will* work 
 
 #### Small Improvements
 
