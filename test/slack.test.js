@@ -87,7 +87,7 @@ describe('Slack Requests', () => {
       const expectedOptions = {
         hostname: 'sourceallies.slack.com',
         port: 443,
-        path: '/api/users.lookupByEmail',
+        path: '/api/users.lookupByEmail?email=' + mockEmail,
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -98,7 +98,7 @@ describe('Slack Requests', () => {
       expect(response).toStrictEqual(mockSlackID);
       expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
       expect(endMock).toHaveBeenCalled();
-      expect(writeMock).toHaveBeenCalledWith(querystring.stringify({ email: mockEmail }));
+      expect(writeMock).toHaveBeenCalledWith();
     });
   });
   describe('SlackPost', () => {

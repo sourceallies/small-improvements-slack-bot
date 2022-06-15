@@ -54,7 +54,7 @@ function getSlackID(email, token) {
   const options = {
     hostname: 'sourceallies.slack.com',
     port: 443,
-    path: '/api/users.lookupByEmail',
+    path: '/api/users.lookupByEmail?email=' + email,
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -81,7 +81,7 @@ function getSlackID(email, token) {
     req.on('error', err => {
       reject(new Error(`https error: ${err}`));
     });
-    req.write(querystring.stringify({ email }));
+    req.write();
     req.end();
   });
 }
