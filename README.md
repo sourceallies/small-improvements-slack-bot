@@ -34,7 +34,7 @@ DEV_ROLE_ARN and PROD_ROLE_ARN are roles in Dev and Prod respectively. They must
 
 Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but *will* work 
 
-[keys]:#### Small Improvements
+#### [Small Improvements][keys]
 
 Anyone's Small Improvement's personal access token may be used.
 [Generate personal access token](https://resources.small-improvements.com/knowledge-base/small-improvements-rest-api/)
