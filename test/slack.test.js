@@ -19,6 +19,7 @@ describe('Slack Requests', () => {
       title: 'title',
       id: 'objectiveId'
     };
+    mockEmail = 'email@email.com';
     mockStatus = 'Achieved';
     mockSlackID = 'Reece';
     mockCycleId = 'CycleId';
@@ -159,7 +160,7 @@ ${mockObjective.description}
       ));
     });
 
-    test('Should reject any non-200 responses', async () => {
+    test('Should reject any non-200 responses for posting', async () => {
       httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
         on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
         statusCode: 403
@@ -171,6 +172,20 @@ ${mockObjective.description}
       } catch (e) { actualError = e; }
 
       expect(actualError).toStrictEqual(new Error('Could not post to Slack: 403'));
+    });
+
+    test('Should reject any non-200 responses for slack ID', async () => {
+      httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
+        on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
+        statusCode: 403
+      }));
+
+      let actualError;
+      try {
+        await slackClient.getSlackID(mockEmail, token);
+      } catch (e) { actualError = e; }
+
+      expect(actualError).toStrictEqual(new Error('Could not get ID: 403'));
     });
   });
 });

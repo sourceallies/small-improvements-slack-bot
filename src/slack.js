@@ -71,7 +71,7 @@ function getSlackID(email, token) {
       let responsePayload = '';
       if (res.statusCode !== 200) {
         console.log(`status logged ${res.statusCode}`);
-        reject(new Error(`Could not get objectives: ${res.statusCode}`));
+        reject(new Error(`Could not get ID: ${res.statusCode}`));
         return;
       }
       res.on('data', d => {

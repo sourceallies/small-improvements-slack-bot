@@ -4,11 +4,16 @@ jest.mock('https');
 
 describe('small-improvements', () => {
   let token,
-    activitiesBody;
+    activitiesBody,
+    mockEmail,
+    mockSIUID;
 
   beforeEach(() => {
+    mockSIUID = 'SIUID';
     token = 'token';
+    mockEmail = 'email@email.com';
     activitiesBody = `{
+      "email": "${mockEmail}",
       "items": [
         {
           "occurredAt": 1654612581248,
@@ -97,11 +102,53 @@ describe('small-improvements', () => {
     jest.resetAllMocks();
   });
 
+  test('Should get email', async () => {
+    const writeMock = jest.fn();
+    const endMock = jest.fn();
+    httpsMock.request = jest.fn((postOption, requestCallBack) => {
+      requestCallBack({
+        on: (data, dataCallBack) => dataCallBack(Buffer.from(activitiesBody, 'utf8')),
+        statusCode: 200
+      });
+      return {
+        write: writeMock,
+        end: endMock,
+        on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+      };
+    });
+
+    const response = await smallImprovementsClient.getEmail(mockSIUID, token);
+
+    const expectedOptions = {
+      hostname: 'allies.small-improvements.com',
+      port: 443,
+      path: '/api/v2/users/' + mockSIUID,
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+        'User-Agent': 'SIBot' /* IF YOU REMOVE THE USER AGENT LINE I (THIS BOT) WILL BREAK */
+      }
+    };
+
+    expect(response).toStrictEqual(mockEmail);
+    expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
+  });
+
   test('Should get objectives', async () => {
-    httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
-      on: (data, dataCallBack) => dataCallBack(Buffer.from(activitiesBody, 'utf8')),
-      statusCode: 200
-    }));
+    const writeMock = jest.fn();
+    const endMock = jest.fn();
+    httpsMock.request = jest.fn((postOption, requestCallBack) => {
+      requestCallBack({
+        on: (data, dataCallBack) => dataCallBack(Buffer.from(activitiesBody, 'utf8')),
+        statusCode: 200
+      });
+      return {
+        write: writeMock,
+        end: endMock,
+        on: jest.fn((eventName, errorCallback) => errorCallback(new Error('Call failed')))
+      };
+    });
 
     const response = await smallImprovementsClient.getObjectives(token);
 
@@ -113,7 +160,7 @@ describe('small-improvements', () => {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
-        'User-Agent': 'SIBot'
+        'User-Agent': 'SIBot' /* IF YOU REMOVE THE USER AGENT LINE I (THIS BOT) WILL BREAK */
       }
     };
 
@@ -121,7 +168,7 @@ describe('small-improvements', () => {
     expect(httpsMock.request).toHaveBeenCalledWith(expectedOptions, expect.any(Function));
   });
 
-  test('Should reject any non-200 responses', async () => {
+  test('Should reject any non-200 responses on objectives', async () => {
     httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
       on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
       statusCode: 403
@@ -135,5 +182,21 @@ describe('small-improvements', () => {
     }
 
     expect(actualError).toStrictEqual(new Error('Could not get objectives: 403'));
+  });
+
+  test('Should reject any non-200 responses on emails', async () => {
+    httpsMock.request = jest.fn((postOption, requestCallBack) => requestCallBack({
+      on: (data, dataCallBack) => dataCallBack(Buffer.from('<html>403</html>', 'utf8')),
+      statusCode: 403
+    }));
+
+    let actualError;
+    try {
+      await smallImprovementsClient.getEmail(mockEmail, token);
+    } catch (e) {
+      actualError = e;
+    }
+
+    expect(actualError).toStrictEqual(new Error('Could not get email: 403'));
   });
 });

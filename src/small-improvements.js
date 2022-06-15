@@ -53,7 +53,7 @@ function getEmail(SIUID, token) { // SIUID (Small Improvements User ID) is in th
       let responsePayload = '';
       if (res.statusCode !== 200) {
         console.log(`status logged ${res.statusCode}`);
-        reject(new Error(`Could not get objectives: ${res.statusCode}`));
+        reject(new Error(`Could not get email: ${res.statusCode}`));
         return;
       }
       res.on('data', d => {
