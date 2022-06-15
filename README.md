@@ -79,4 +79,5 @@ npm run integration
 
 - [AWS SAM](https://aws.amazon.com/serverless/sam/#:~:text=The%20AWS%20Serverless%20Application%20Model,and%20model%20it%20using%20YAML.)
 - [Posting Messages through the Slack API](https://api.slack.com/methods/chat.postMessage)
-- [Small Improvement API Documentation (or lack thereof)](https://storage.googleapis.com/si-rest-api-docs/dist/index.html)
+- [Small Improvements (lack of) API Documentation](https://storage.googleapis.com/si-rest-api-docs/dist/index.html)
+- [DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
