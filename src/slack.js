@@ -80,7 +80,7 @@ function getSlackID(email, token) {
     req.on('error', err => {
       reject(new Error(`https error: ${err}`));
     });
-    req.write();
+    // req.write();
     req.end();
   });
 }
