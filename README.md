@@ -8,6 +8,8 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ## Architecture
 
+### Architecture Diagram
+
 ![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
 ## Development
@@ -53,8 +55,6 @@ The *deployment* workflow has 3 jobs, each occuring only if the previous complet
 
 The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main
 
-## Useful links
-
 ### Running Locally
 
 **Warning:** this can still have effects on both the dev database and Slack under the right conditions
@@ -76,3 +76,20 @@ Finally, run the integration test to use the function locally
 ```console
 npm run integration
 ```
+
+## Useful links
+
+- [AWS SAM](https://aws.amazon.com/serverless/sam/#:~:text=The%20AWS%20Serverless%20Application%20Model,and%20model%20it%20using%20YAML.)
+- [Posting Messages through the Slack API](https://api.slack.com/methods/chat.postMessage)
+- [Small Improvements (lack of) API Documentation](https://storage.googleapis.com/si-rest-api-docs/dist/index.html)
+- [DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
+- [mrkdwn formatting with Slack](https://api.slack.com/reference/surfaces/formatting)
+
+### Endpoints Utilized
+
+- Small Improvements
+  - /api/v2/users/${USER_ID}
+  - /api/v2/activities?modules=OBJECTIVE
+- Slack
+  - /api/chat.postMessage
+  - /api/users.lookupByEmail?email=${USER_EMAIL}
