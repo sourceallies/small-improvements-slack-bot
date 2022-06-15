@@ -43,9 +43,13 @@ async function slackPost(authToken, channelName, formattedMessage) { // postData
   });
 }
 
-async function formatSlackMessage(objectiveItem, newStatus, slackUID) {
+async function formatSlackMessage(objectiveItem, newStatus, slackUID, cycleId) {
   const toSend = messageVariables;
-  toSend.text = '<@' + slackUID + '> has ' + newStatus.toLowerCase() + ' their goal: *' + objectiveItem.title + '!*';
+  toSend.text = `<@${slackUID}> has ${newStatus.toLowerCase()} their goal!\n*${objectiveItem.title}*\n`;
+  if (objectiveItem.description) {
+    toSend.text += `${objectiveItem.description}\n`;
+  }
+  toSend.text += `<https://allies.small-improvements.com/app/objectives/${cycleId}/${objectiveItem.id}|Open in Small Improvements>`;
   return toSend;// return JSON format
 }
 
