@@ -9,17 +9,19 @@ describe('Slack Requests', () => {
     mockObjective,
     mockStatus,
     mockEmail,
-    mockSlackID;
+    mockSlackID,
+    mockCycleId;
 
   beforeEach(() => {
     token = 'token';
     channelID = 'channelID';
     mockObjective = {
       title: 'title',
-      owner: { name: 'Reece' }
+      id: 'objectiveId'
     };
     mockStatus = 'Achieved';
     mockSlackID = 'Reece';
+    mockCycleId = 'CycleId';
     responseBody = `{
       ok: true,
       channel: 'C0179PL5K8E',
@@ -52,9 +54,24 @@ describe('Slack Requests', () => {
     jest.resetAllMocks();
   });
   describe('Slack formatting', () => {
-    test('Formats messages correctly', async () => {
-      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID);
-      expect(formattedText.text).toStrictEqual('<@Reece> has achieved their goal: *title!*');
+    test('Formats messages correctly *without* description', async () => {
+      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID, mockCycleId);
+      expect(formattedText.text).toStrictEqual(
+        `<@${mockSlackID}> has achieved their goal!
+*${mockObjective.title}*
+<https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
+      );
+    });
+    test('Formats messages correctly with description', async () => {
+      mockObjective.description = 'Description of objective';
+
+      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID, mockCycleId);
+      expect(formattedText.text).toStrictEqual(
+        `<@${mockSlackID}> has achieved their goal!
+*${mockObjective.title}*
+${mockObjective.description}
+<https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
+      );
     });
   });
   describe('Slack Lookup', () => {
