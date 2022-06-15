@@ -1,6 +1,6 @@
 # Small Improvements Slack Bot
 
-Periodically keeps track of and writes notifications to Slack of Achieved goals from Small Improvements
+Periodically keeps track of and writes notifications to Slack of Achieved goals from Small Improvements.
 
 See the [Slack App page](https://api.slack.com/apps/A03K9PBLSTE/general?) for more information on the bot and its permissions.
 
@@ -10,7 +10,7 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ### Serverless Architecture Diagram
 
-This Diagram below is useful if you would like to understand the [inner workings of the lambda function](#lambda-function)
+This Diagram below is useful if you would like to understand the [inner workings of the lambda function](#lambda-function).
 
 ![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
@@ -30,26 +30,26 @@ An Event that is triggered by a rule deployed and updated automatically by [SAM]
 
 ### Lambda Function
 
-Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam)
+Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam).
 
 - Triggered by a CloudWatch Event, which is passed into its main function.
 - Assigns its Slack Channel name via Environment variables passed in by SAM.
 - Uses the SecretsManager to get both the Slack and Small Improvements tokens.
 - Gets all objectives using the Small Improvements API token.
 - Filters the objectives such that only those of a specific type, status, visibility, and time are left.
-- Log the number of objectives found
-- For each of those objectives,the database is checked to see if it has an object with the same ID (returns a promise)
+- Log the number of objectives found.
+- For each of those objectives,the database is checked to see if it has an object with the same ID (returns a promise).
   - If the objective was in the database, return undefined, there is nothing left to do for this objective.
   - If the objective was not in the database, it will try to post to Slack, which requires the following:
-    - Try to get SlackID via the email address in the Small Improvements Objective
-    - Format the slack message using the objective, its status, and the SlackID
-    - Try to send the message (if successful, resolves to the body of the HTTP response)
-    - Try to insert the record of the objective into the database
+    - Try to get SlackID via the email address in the Small Improvements Objective.
+    - Format the slack message using the objective, its status, and the SlackID.
+    - Try to send the message (if successful, resolves to the body of the HTTP response).
+    - Try to insert the record of the objective into the database.
 - Finally, after all of the promises created from those objectives resolve, the data on number of successful and unsuccessful posts is logged and returned.
 
 ### DynamoDB
 
-Stores data on objective IDs, objective occurring times, and sheds old data via TTL. Is ensured to be live/updated automatically by [SAM](#sam)
+Stores data on objective IDs, objective occurring times, and sheds old data via TTL. Is ensured to be live/updated automatically by [SAM](#sam).
 
 ## Development
 
@@ -71,7 +71,7 @@ There are four sets of credentials used in this project as GitHub Secrets:
 
 Roles in Dev and Prod respectively, DEV_ROLE_ARN and PROD_ROLE_ARN must have all the permissions required to deploy the application in their respective environments.
 
-Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but *will* work 
+Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but *will* work.
 
 #### Small Improvements
 
@@ -80,7 +80,7 @@ Anyone's Small Improvement's personal access token may be used.
 
 #### Slack
 
-Copy from [this Slack App's OAuth page](https://api.slack.com/apps/A03K9PBLSTE/oauth?)
+Copy from [this Slack App's OAuth page](https://api.slack.com/apps/A03K9PBLSTE/oauth?).
 
 ### Secrets Manager
 
@@ -106,25 +106,25 @@ The *deployment* workflow has 3 jobs, each occuring only if the previous complet
 
 #### Pull Requests
 
-The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main
+The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main.
 
 ### Running Locally
 
-**Warning:** this can still have effects on both the dev database and Slack under the right conditions
+**Warning:** this can still have effects on both the dev database and Slack under the right conditions.
 
-Navigate to the local directory of this repository and install all dependencies
+Navigate to the local directory of this repository and install all dependencies.
 
 ```console
 npm install
 ```
 
-Make sure you are on the dev environment with all dev credentials
+Make sure you are on the dev environment with all dev credentials.
 
 ```console
 dev
 ```
 
-Finally, run the integration test to use the function locally
+Finally, run the integration test to use the function locally.
 
 ```console
 npm run integration
