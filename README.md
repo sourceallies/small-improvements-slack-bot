@@ -7,6 +7,7 @@ See the [Slack App page](https://api.slack.com/apps/A03K9PBLSTE/general?) for mo
 Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain access.
 
 ## Architecture
+
 ![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
 ## Development
@@ -15,25 +16,27 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 There are two sets of credentials. A personal access token from Small Improvements and the Slack Bot's OAuth token.
 
-Credentials are Hard-Coded into index.js, and decryption keys are stored in AWS Key Management Service (KMS). If either token becomes invalid, review the links below to get new tokens. Then using the KMS, encrypt the new value with your key, and replace the encrypted value(s) in index.js.
+Credentials are stored in Secrets Manager. It is managed manually to keep secrets out of the code base. If either token becomes invalid, review the links below to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
 
 #### Small Improvements
+
 Anyone's Small Improvement's personal access token may be used.
 [Generate personal access token](https://resources.small-improvements.com/knowledge-base/small-improvements-rest-api/)
 
 #### Slack
-Copy from [slack OAuth page](https://api.slack.com/apps/A03K9PBLSTE/oauth?)
 
-#### Key Management Service
+Copy from [this Slack App's OAuth page](https://api.slack.com/apps/A03K9PBLSTE/oauth?)
+
+### Secrets Manager
+
 When putting the new secret, the value must follow this structure.
+
 ```
 {
   "SIToken": "***",
   "SlackToken": "***"
 }
 ```
-
-
 
 ### Workflow
 
