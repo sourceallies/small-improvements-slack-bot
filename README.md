@@ -83,7 +83,7 @@ npm run integration
 - [DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
 - [mrkdwn formatting with Slack](https://api.slack.com/reference/surfaces/formatting)
 
-### Endpoints
+### Endpoints Utilized
 
 - Small Improvements
   - /api/v2/users/${USER_ID}
