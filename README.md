@@ -53,8 +53,6 @@ The *deployment* workflow has 3 jobs, each occuring only if the previous complet
 
 The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main
 
-## Useful links
-
 ### Running Locally
 
 **Warning:** this can still have effects on both the dev database and Slack under the right conditions
@@ -76,3 +74,9 @@ Finally, run the integration test to use the function locally
 ```console
 npm run integration
 ```
+
+## Useful links
+
+- [AWS SAM](https://aws.amazon.com/serverless/sam/#:~:text=The%20AWS%20Serverless%20Application%20Model,and%20model%20it%20using%20YAML.)
+- [Posting Messages through the Slack API](https://api.slack.com/methods/chat.postMessage)
+- [Small Improvement API Documentation (or lack thereof)](https://storage.googleapis.com/si-rest-api-docs/dist/index.html)
