@@ -14,15 +14,29 @@ This Diagram below is useful if you would like to understand the [inner workings
 
 ![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
+### SAM
+
+I don't really know what to put here right now-------------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+
+### Cloudwatch
+
+A rule deployed and updated automatically by [SAM](#sam). The rule specifies the times at which the lambda function should be triggered.
+
 ### Lambda Function
+
+Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam)
 
 - Triggered by a CloudWatch Event, which is passed into its main function.
 - Assigns its Slack Channel name via Environment variables passed in by SAM.
-- Uses the SecretsManager in [secrets.js]() to get both the Slack and Small Improvements tokens.
-- Uses the client provided by [small-improvements.js]() to get all objectives using the Small Improvements API token.
+- Uses the SecretsManager to get both the Slack and Small Improvements tokens.
+- Gets all objectives using the Small Improvements API token.
 - Filters the objectives such that only those of a specific type, status, visibility, and time are left.
 - Log the number of objectives found
-- For each of those objectives, using [dynamodb.js](), The database is checked to see if it has an object with the same ID (returns a promise)
+- For each of those objectives,the database is checked to see if it has an object with the same ID (returns a promise)
   - If the objective was in the database, return undefined, there is nothing left to do for this objective.
   - If the objective was not in the database, it will try to post to Slack, which requires the following:
     - Try to get SlackID via the email address in the Small Improvements Objective
@@ -31,6 +45,9 @@ This Diagram below is useful if you would like to understand the [inner workings
     - Try to insert the record of the objective into the database
 - Finally, after all of the promises created from those objectives resolve, the data on number of successful and unsuccessful posts is logged and returned.
 
+### DynamoDB
+
+Stores data on objective IDs, objective occurring times, and sheds old data via TTL. Is ensured to be live/updated automatically by [SAM](#sam)
 
 ## Development
 
