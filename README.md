@@ -1,4 +1,4 @@
-[![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/reeceappling/97221ecae2df1a5eaa5c82e75570fb5a/raw/small-improvements-slack-bot__addBadges.json)]
+[![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/reeceappling/97221ecae2df1a5eaa5c82e75570fb5a/raw/small-improvements-slack-bot__heads_addBadges.json)]
 
 heads_main.json
 

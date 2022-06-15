@@ -32,6 +32,7 @@ jobs:
     - if: ${{ matrix.node-version == '16.x' }}
       name: Get Coverage for badge
       run: |
+        #
         #   '=============================== Coverage summary ===============================',
         #   'Statements   : 32.5% ( 39/120 )',
         #   'Branches     : 38.89% ( 21/54 )',
