@@ -1,5 +1,4 @@
 const https = require('https');
-const querystring = require('node:querystring');
 const messageVariables = {
   username: 'Mastery Path Bot',
   icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
@@ -54,11 +53,11 @@ function getSlackID(email, token) {
   const options = {
     hostname: 'sourceallies.slack.com',
     port: 443,
-    path: '/api/users.lookupByEmail',
+    path: '/api/users.lookupByEmail?email=' + email,
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   };
@@ -81,7 +80,7 @@ function getSlackID(email, token) {
     req.on('error', err => {
       reject(new Error(`https error: ${err}`));
     });
-    req.write(querystring.stringify({ email }));
+    req.write();
     req.end();
   });
 }
