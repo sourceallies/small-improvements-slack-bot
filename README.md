@@ -16,6 +16,8 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ### Credentials
 
+This project utilizes credentials stored in GitHub Secrets. The deployment workflow uses IAM Role ARNs with the AWS CLI to Configure Credentials, and API tokens are injected into SAM as parameter overrides. The aformentioned tokens are utilized in such a way that they make it to the final lambda function as environment variables without being echoed anywhere in the codebase, AWS logs, or Actions logs. If either API token becomes invalid, review the links [below][#### Small Improvements] to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
+
 There are four sets of credentials used in this project as GitHub Secrets:
 | Secret Name       | Secret Description                                |
 | ----------------- |:-------------------------------------------------:|
@@ -24,7 +26,7 @@ There are four sets of credentials used in this project as GitHub Secrets:
 | **DEV_ROLE_ARN**  | The ARN of the IAM role used in deploying to Dev  |
 | **PROD_ROLE_ARN** | The ARN of the IAM role used in deploying to Prod |
 
-Credentials are stored in GitHub Secrets. These secrets are injected into SAM as parameter overrides in such a way that they make it to the final lambda function as environment variables without being echoed anywhere in the codebase, AWS logs, or Actions logs. If either token becomes invalid, review the links below to get new tokens. Then using the AWS console, put the new secret value. You will need to send both values.
+
 
 #### AWS IAM ROLES
 
