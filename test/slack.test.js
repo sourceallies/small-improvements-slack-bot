@@ -63,18 +63,78 @@ describe('Slack Requests', () => {
 <https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
       );
     });
+
     test('Formats messages correctly with description', async () => {
-      mockObjective.description = 'Description of objective';
+      const description = 'Description of objective';
+      mockObjective.description = `<!--MARKUP_VERSION:v3-->${description}`;
 
       const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID, mockCycleId);
       expect(formattedText.text).toStrictEqual(
         `<@${mockSlackID}> has achieved their goal!
 *${mockObjective.title}*
-${mockObjective.description}
+${description}
 <https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
       );
     });
   });
+
+  describe('format description', () => {
+    test('should replace <strong> text with *', () => {
+      const description = '<!--MARKUP_VERSION:v3--><strong>bold</strong>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('*bold*');
+    });
+    test('should replace <p>...</p> text with \\n', () => {
+      const description = '<!--MARKUP_VERSION:v3--><p>paragraph</p>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('paragraph\n');
+    });
+    test('should replace <em> text with _', () => {
+      const description = '<!--MARKUP_VERSION:v3--><em>italic</em>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('_italic_');
+    });
+    test('should remove <u>', () => {
+      const description = '<!--MARKUP_VERSION:v3--><u>underline</u>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('underline');
+    });
+    test('should replace <s> with ~', () => {
+      const description = '<!--MARKUP_VERSION:v3--><s>strikethrough</s>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('~strikethrough~');
+    });
+    test('should replace ordered lists', () => {
+      const description = '<!--MARKUP_VERSION:v3--><ol><li>item 1</li><li>item 2</li></ol>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('• item 1\n• item 2\n');
+    });
+    test('should replace unordered lists', () => {
+      const description = '<!--MARKUP_VERSION:v3--><ul><li>item 1</li><li>item 2</li></ul>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('• item 1\n• item 2\n');
+    });
+    test('should replace indents', () => {
+      const description = '<!--MARKUP_VERSION:v3--><p class="ql-indent-1">paragraph</p>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('    paragraph\n');
+    });
+    test('should replace links', () => {
+      const description = '<!--MARKUP_VERSION:v3--><a href="https://example.com" rel="noopener noreferrer" target="_blank">https://example.com</a>';
+      const result = slackClient.formatDescription(description);
+
+      expect(result).toStrictEqual('<https://example.com>');
+    });
+  });
+
   describe('Slack Lookup', () => {
     beforeEach(() => {
       mockSlackID = 'Reece';

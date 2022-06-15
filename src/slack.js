@@ -47,10 +47,43 @@ async function formatSlackMessage(objectiveItem, newStatus, slackUID, cycleId) {
   const toSend = messageVariables;
   toSend.text = `<@${slackUID}> has ${newStatus.toLowerCase()} their goal!\n*${objectiveItem.title}*\n`;
   if (objectiveItem.description) {
-    toSend.text += `${objectiveItem.description}\n`;
+    toSend.text += `${formatDescription(objectiveItem.description)}\n`;
   }
   toSend.text += `<https://allies.small-improvements.com/app/objectives/${cycleId}/${objectiveItem.id}|Open in Small Improvements>`;
   return toSend;// return JSON format
+}
+
+function formatDescription(description) {
+  if (description.includes('<!--MARKUP_VERSION:v3-->')) {
+    const bold = /<\/?strong>/gi;
+    const pStart = /<p>/gi;
+    const pEnd = /<\/p>/gi;
+    const italic = /<\/?em>/gi;
+    const underline = /<\/?u>/gi;
+    const strikethrough = /<\/?s>/gi;
+    const orderList = /<\/?ol>/gi;
+    const unorderList = /<\/?ul>/gi;
+    const orderListItemStart = /<li>/gi;
+    const orderListItemEnd = /<\/li>/gi;
+    const indent = /<p class="ql-indent-\d+">/gi;
+    const link = /<a .*>(.*?)<\/a>/gi;
+
+    return description
+      .replace('<!--MARKUP_VERSION:v3-->', '')
+      .replaceAll(bold, '*')
+      .replaceAll(pStart, '')
+      .replaceAll(pEnd, '\n')
+      .replaceAll(italic, '_')
+      .replaceAll(underline, '')
+      .replaceAll(strikethrough, '~')
+      .replaceAll(orderListItemStart, '• ')
+      .replaceAll(orderListItemEnd, '\n')
+      .replaceAll(orderList, '')
+      .replaceAll(unorderList, '')
+      .replaceAll(indent, '    ')
+      .replaceAll(link, '<$1>');
+  }
+  return '';
 }
 
 function getSlackID(email, token) {
@@ -89,5 +122,6 @@ function getSlackID(email, token) {
 }
 
 exports.formatSlackMessage = formatSlackMessage;
+exports.formatDescription = formatDescription;
 exports.slackPost = slackPost;
 exports.getSlackID = getSlackID;
