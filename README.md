@@ -100,9 +100,9 @@ When putting the new secret, the value must follow this structure.
 Deployment should be automatic with each new commit, but otherwise deployment can be triggered manually with a new deployment workflow on the repo's "actions" tab.
 
 The *deployment* workflow has 3 jobs, each occuring only if the previous completed without error.
-1. Build: Ensures that all code is linted and buildable
-2. Deploy-dev: Deploys to the prod environment
-3. Deploy-prod: Deploys to the prod environment
+1. Build: Ensures that all code is linted and buildable.
+2. Deploy-dev: Deploys to the prod environment via SAM.
+3. Deploy-prod: Deploys to the prod environment via SAM.
 
 #### Pull Requests
 
