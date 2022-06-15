@@ -10,6 +10,8 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 ![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
+-----
+
 ## Development
 
 ### Credentials
@@ -57,7 +59,7 @@ The *PR Check* workflow has a singular job, which ensures that the code is linte
 
 ### Running Locally
 
-*Warning:* this can still have effects on both the dev database and Slack under the right conditions
+**Warning:** this can still have effects on both the dev database and Slack under the right conditions
 
 Navigate to the local directory of this repository and install all dependencies
 
@@ -65,7 +67,7 @@ Navigate to the local directory of this repository and install all dependencies
 npm install
 ```
 
-Make sure you are on the dev environment (all dev credentials in your PATH)
+Make sure you are on the dev environment with all dev credentials
 
 ```
 dev
