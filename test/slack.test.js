@@ -92,7 +92,7 @@ describe('Slack Requests', () => {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         }
       };
       expect(response).toStrictEqual(mockSlackID);
