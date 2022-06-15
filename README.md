@@ -1,5 +1,7 @@
 # Small Improvements Slack Bot
 
+Periodically keeps track of and writes notifications to Slack of Achieved goals from Small Improvements
+
 [Slack App](https://api.slack.com/apps/A03K9PBLSTE/general?)
 
 Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain access.
