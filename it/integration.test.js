@@ -1,5 +1,4 @@
 const index = require('../src/index');
-jest.setTimeout(20000);
 
 describe('integration', () => {
   const event = {
