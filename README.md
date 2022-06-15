@@ -81,3 +81,13 @@ npm run integration
 - [Posting Messages through the Slack API](https://api.slack.com/methods/chat.postMessage)
 - [Small Improvements (lack of) API Documentation](https://storage.googleapis.com/si-rest-api-docs/dist/index.html)
 - [DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
+- [mrkdwn formatting with Slack](https://api.slack.com/reference/surfaces/formatting)
+
+### EndpointsS
+
+- Small Improvements
+  - /api/v2/users/${USER_ID}
+  - /api/v2/activities?modules=OBJECTIVE
+- Slack
+  - /api/chat.postMessage
+  - /api/users.lookupByEmail?email=${USER_EMAIL}
