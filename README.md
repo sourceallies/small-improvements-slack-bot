@@ -16,6 +16,8 @@ This Diagram below is useful if you would like to understand the [inner workings
 
 ### SAM
 
+The backbone of this project's CI/CD pipeline.
+
 I don't really know what to put here right now-------------------------------------------------------------
 -----------------------------------------------------------
 -----------------------------------------------------------
@@ -24,7 +26,7 @@ I don't really know what to put here right now----------------------------------
 
 ### Cloudwatch
 
-A rule deployed and updated automatically by [SAM](#sam). The rule specifies the times at which the lambda function should be triggered.
+An Event that is triggered by a rule deployed and updated automatically by [SAM](#sam). The rule specifies the times at which the lambda function will be triggered by an event.
 
 ### Lambda Function
 
