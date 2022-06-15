@@ -5,7 +5,7 @@
 Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain access.
 
 ## Architecture
-![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.png?raw=true)
+![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
 
 ## Development
 
