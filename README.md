@@ -56,3 +56,21 @@ The *PR Check* workflow has a singular job, which ensures that the code is linte
 ## Useful links
 
 ### Running Locally
+
+Navigate to the local directory of this repository and install all dependencies
+
+```
+npm install
+```
+
+Make sure you are on the dev environment (all dev credentials in your PATH)
+
+```
+dev
+```
+
+Finally, run the integration test to use the function locally (Note this can still have effects on the dev database and Slack)
+
+```
+npm run integration
+```
