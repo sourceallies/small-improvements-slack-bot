@@ -1,6 +1,5 @@
 const slackClient = require('../src/slack');
 const httpsMock = require('https');
-const querystring = require('node:querystring');
 jest.mock('https');
 
 describe('Slack Requests', () => {

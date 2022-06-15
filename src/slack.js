@@ -1,5 +1,4 @@
 const https = require('https');
-const querystring = require('node:querystring');
 const messageVariables = {
   username: 'Mastery Path Bot',
   icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
