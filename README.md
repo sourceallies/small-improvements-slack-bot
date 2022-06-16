@@ -1,4 +1,4 @@
-![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/reeceappling/97221ecae2df1a5eaa5c82e75570fb5a/raw/small-improvements-slack-bot__heads_addBadges.json)
+![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/reeceappling/97221ecae2df1a5eaa5c82e75570fb5a/raw/small-improvements-slack-bot__heads_main.json)
 
 # Small Improvements Slack Bot
 
@@ -18,13 +18,7 @@ This Diagram below is useful if you would like to understand the [inner workings
 
 ### SAM
 
-The backbone of this project's CI/CD pipeline.
-
-I don't really know what to put here right now-------------------------------------------------------------
------------------------------------------------------------
------------------------------------------------------------
------------------------------------------------------------
------------------------------------------------------------
+The backbone of this project's CI/CD pipeline, configures and deploys all resources needed through CloudFormation. More information about SAM can be found in [AWS's SAM Documentation](https://aws.amazon.com/serverless/sam/#:~:text=The%20AWS%20Serverless%20Application%20Model,and%20model%20it%20using%20YAML.).
 
 ### Cloudwatch
 
@@ -32,7 +26,7 @@ An Event that is triggered by a rule deployed and updated automatically by [SAM]
 
 ### Lambda Function
 
-Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam).
+Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam). 
 
 - Triggered by a CloudWatch Event, which is passed into its main function.
 - Assigns its Slack Channel name via Environment variables passed in by SAM.
@@ -51,7 +45,7 @@ Serves as the main hub of this stack, deployed and updated automatically by [SAM
 
 ### DynamoDB
 
-Stores data on objective IDs, objective occurring times, and sheds old data via TTL. Is ensured to be live/updated automatically by [SAM](#sam).
+Stores data on objective IDs, objective achieved times, and sheds old data via TTL. Is ensured to be live/updated automatically by [SAM](#sam).
 
 ## Development
 
@@ -86,7 +80,7 @@ Copy from [this Slack App's OAuth page](https://api.slack.com/apps/A03K9PBLSTE/o
 
 ### Secrets Manager
 
-When putting the new secret, the value must follow this structure.
+The secrets structure is as follows.
 
 ```
 {
@@ -103,7 +97,7 @@ Deployment should be automatic with each new commit, but otherwise deployment ca
 
 The *deployment* workflow has 3 jobs, each occuring only if the previous completed without error.
 1. Build: Ensures that all code is linted and buildable.
-2. Deploy-dev: Deploys to the prod environment via SAM.
+2. Deploy-dev: Deploys to the dev environment via SAM.
 3. Deploy-prod: Deploys to the prod environment via SAM.
 
 #### Pull Requests
@@ -120,7 +114,7 @@ Navigate to the local directory of this repository and install all dependencies.
 npm install
 ```
 
-Make sure you are on the dev environment with all dev credentials.
+Make sure you are on the dev environment with all dev credentials. More information on this can be found in the [sai-aws-auth repo](https://github.com/sourceallies/sai-aws-auth).
 
 ```console
 dev
