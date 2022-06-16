@@ -31,6 +31,24 @@ describe('filter activities', () => {
     };
   });
 
+  test('should ignore items with no items', () => {
+    activities.items.push({});
+
+    const result = filter.filterActivities(activities, new Date(eventDateString));
+
+    expect(result).toHaveLength(1);
+  });
+
+  test('should ignore items with no activities', () => {
+    activities.items.push({
+      items: [{}]
+    });
+
+    const result = filter.filterActivities(activities, new Date(eventDateString));
+
+    expect(result).toHaveLength(1);
+  });
+
   test('should remove activity with status change to in progress', () => {
     activities.items[0].items[0].activities[0].change.newStatus = {
       color: '#eee',

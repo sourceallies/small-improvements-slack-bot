@@ -5,8 +5,8 @@ const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
   Partially achieved status == 103
 */
 function filterActivities(activities, eventDate) {
-  const publicObjectiveStatusChanges = activities.items.flatMap(i => i.items)
-    .flatMap(i => i.activities)
+  const publicObjectiveStatusChanges = activities.items.flatMap(i => i.items || [])
+    .flatMap(i => i.activities || [])
     .filter(a => a.type === 'OBJECTIVE_STATUS_CHANGED')
     .filter(a => a.content.objective.visibility === 'PUBLIC')
     .filter(a => a.occurredAt >= eventDate.getTime() - threeDaysInMillis);
