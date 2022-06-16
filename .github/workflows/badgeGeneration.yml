@@ -69,7 +69,6 @@ jobs:
         filename: small-improvements-slack-bot__${{ env.BRANCH }}.json
         label: Test Coverage
         message: ${{ env.COVERAGE }}
-        color: green
         namedLogo: jest
         maxColorRange: 100.00
         minColorRange: 0.00
