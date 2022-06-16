@@ -62,8 +62,8 @@ jobs:
         echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
         # echo "CCOV=$(expr ${$COVERAGE//%} + 0)" >> $GITHUB_ENV
         # echo "CCOV: $(expr ${$COVERAGE//%} + 0)"
-        echo "CCOV=${$COVERAGE//%}" >> $GITHUB_ENV
-        echo "CCOV: ${$COVERAGE//%}"
+        echo "CCOV=$(echo $COVERAGE | tr --delete %)" >> $GITHUB_ENV
+        echo "CCOV: $(echo $COVERAGE | tr --delete %)"
     - if: ${{ matrix.node-version == '16.x' }}
       name: Create the Badge
       uses: schneegans/dynamic-badges-action@v1.4.0
