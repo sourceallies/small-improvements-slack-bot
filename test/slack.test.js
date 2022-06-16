@@ -133,6 +133,11 @@ ${description}
 
       expect(result).toStrictEqual('<https://example.com>');
     });
+    test('should be blank without markup version', () => {
+      const description = '<strong>bold</strong>';
+      const result = slackClient.formatDescription(description);
+      expect(result).toStrictEqual('');
+    });
   });
 
   describe('Slack Lookup', () => {
