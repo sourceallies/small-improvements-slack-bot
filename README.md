@@ -1,4 +1,4 @@
-![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ci-sourceallies/97221ecae2df1a5eaa5c82e75570fb5a/raw/small-improvements-slack-bot__heads_main.json)
+![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ci-sourceallies/a75d8e3e0b2e93d28de4074882dade90/raw/small-improvements-slack-bot__heads_main.json)
 
 # Small Improvements Slack Bot
 
