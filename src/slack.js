@@ -1,7 +1,7 @@
 const https = require('https');
 const messageVariables = {
   username: 'Mastery Path Bot',
-  icon_url: 'https://s3-us-west-2.amazonaws.com/slack-files2/bot_icons/2018-10-01/446651996324_48.png',
+  icon_url: 'https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/SAILogo.png?raw=true',
   link_names: 1
 };
 
