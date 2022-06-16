@@ -46,6 +46,7 @@ jobs:
         echo $TOKENS
         # process.env.COVERAGE = '31.93%';
         echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
+        var COVERAGE=$(echo ${TOKENS[2]})
         # var REF = 'refs/pull/27/merge.json';
         REF=${{ github.ref }}
         # console.log('github.ref: ' + REF);
@@ -58,6 +59,7 @@ jobs:
         echo $BRANCH_NAME
         # process.env.BRANCH = 'pull_27';
         echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
+        echo "CCOV=$(expr ${COVERAGE::-1} + 0)" >> $GITHUB_ENV
     - if: ${{ matrix.node-version == '16.x' }}
       name: Create the Badge
       uses: schneegans/dynamic-badges-action@v1.0.0
@@ -69,3 +71,6 @@ jobs:
         message: ${{ env.COVERAGE }}
         color: green
         namedLogo: jest
+        maxColorRange: 100.00
+        minColorRange: 0.00
+        valColorRange: ${{ env.CCOV }}
