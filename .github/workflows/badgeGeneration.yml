@@ -67,7 +67,7 @@ jobs:
       uses: schneegans/dynamic-badges-action@v1.4.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
-        gistID: 95fd54f6af427a560893e2925c8c0fb3
+        gistID: a75d8e3e0b2e93d28de4074882dade90
         filename: small-improvements-slack-bot__${{ env.BRANCH }}.json
         label: Test Coverage
         message: ${{ env.COVERAGE }}
