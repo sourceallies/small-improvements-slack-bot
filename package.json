@@ -8,7 +8,7 @@
     "lint": "eslint src/*.js test/*.js",
     "integration": "jest ./it",
     "test": "jest ./test",
-    "badgeTest": "jest ./test --coverage"
+    "badgeTest": "jest ./test --coverage",
     "verify": "npm run lint && npm run test"
   },
   "repository": {
