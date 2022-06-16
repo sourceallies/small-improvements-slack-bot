@@ -150,7 +150,7 @@ describe('index', () => {
     expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
-      activities.items[0].items[0].activities[0].content.objective,
+      activities.items[0].items[0].activities[0].content,
       activities.items[0].items[0].activities[0].change.newStatus.description,
       mockEmail
     );
@@ -184,7 +184,7 @@ describe('index', () => {
     expect(slackClient.postObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
-      activities.items[0].items[0].activities[1].content.objective,
+      activities.items[0].items[0].activities[1].content,
       activities.items[0].items[0].activities[1].change.newStatus.description,
       mockEmail
     );

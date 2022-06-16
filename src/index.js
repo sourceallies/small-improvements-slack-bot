@@ -43,7 +43,7 @@ async function main(event, context) {
         await slackService.postObjective(
           secrets.SlackToken,
           slackChannel,
-          activity.content.objective,
+          activity.content,
           activity.change.newStatus.description,
           SIEmail
         );
