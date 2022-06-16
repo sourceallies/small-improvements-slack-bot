@@ -60,8 +60,8 @@ jobs:
         echo $BRANCH_NAME
         # process.env.BRANCH = 'pull_27';
         echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
-        echo "CCOV=$(expr $($COVERAGE::-1) + 0)" >> $GITHUB_ENV
-        echo "CCOV: $(expr $($COVERAGE::-1) + 0)"
+        echo "CCOV=$(expr ${$COVERAGE//%} + 0)" >> $GITHUB_ENV
+        echo "CCOV: $(expr ${$COVERAGE//%} + 0)"
     - if: ${{ matrix.node-version == '16.x' }}
       name: Create the Badge
       uses: schneegans/dynamic-badges-action@v1.4.0
