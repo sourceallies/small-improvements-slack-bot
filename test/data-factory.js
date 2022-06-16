@@ -1,15 +1,17 @@
-exports.createActivity = (activityProps, objectiveProps) => {
+const defaultNewStatus = {
+  color: '#2ecd72',
+  description: 'Achieved',
+  status: 100
+};
+
+exports.createActivity = (activityProps, objectiveProps, newStatus = defaultNewStatus) => {
   return {
     actor: {
       firstName: 'Developer'
     },
     occurredAt: 1651856682326,
     change: {
-      newStatus: {
-        color: '#2ecd72',
-        description: 'Achieved',
-        status: 100
-      },
+      newStatus,
       oldStatus: {
         color: '#eee',
         description: 'Open',
