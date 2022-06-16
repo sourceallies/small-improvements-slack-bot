@@ -46,7 +46,7 @@ jobs:
         echo $TOKENS
         # process.env.COVERAGE = '31.93%';
         echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
-        var COVERAGE=$(echo ${TOKENS[2]})
+        COVERAGE=$(echo ${TOKENS[2]})
         # var REF = 'refs/pull/27/merge.json';
         REF=${{ github.ref }}
         # console.log('github.ref: ' + REF);
