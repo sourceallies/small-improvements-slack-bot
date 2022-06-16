@@ -9,7 +9,8 @@ describe('postObjective', () => {
     mockObjective,
     mockStatus,
     mockEmail,
-    mockSlackID;
+    mockSlackID,
+    mockObjectiveCycleId;
 
   beforeEach(() => {
     token = 'token';
@@ -21,6 +22,7 @@ describe('postObjective', () => {
     mockStatus = 'Achieved';
     mockSlackID = 'Reece';
     mockEmail = 'email@email.com';
+    mockObjectiveCycleId = 'abcdef';
     responseBody = `{
       ok: true,
       channel: 'C0179PL5K8E',
@@ -54,10 +56,17 @@ describe('postObjective', () => {
     slackClient.getSlackID.mockResolvedValue(mockSlackID);
     slackClient.formatSlackMessage.mockResolvedValue(mockFormattedMessage);
     slackClient.slackPost.mockResolvedValue(responseBody);
-    const response = await postClient.postObjective(token, channelID, mockObjective, mockStatus, mockEmail);
+    const mockContent = {
+      cycle: {
+        id: mockObjectiveCycleId
+      },
+      objective: mockObjective
+    };
+
+    const response = await postClient.postObjective(token, channelID, mockContent, mockStatus, mockEmail);
     expect(response).toStrictEqual(responseBody);
     expect(slackClient.getSlackID).toHaveBeenCalledWith(mockEmail, token);
-    expect(slackClient.formatSlackMessage).toHaveBeenCalledWith(mockObjective, mockStatus, mockSlackID);
+    expect(slackClient.formatSlackMessage).toHaveBeenCalledWith(mockObjective, mockStatus, mockSlackID, mockObjectiveCycleId);
     expect(slackClient.slackPost).toHaveBeenCalledWith(token, channelID, mockFormattedMessage);
   });
 });
