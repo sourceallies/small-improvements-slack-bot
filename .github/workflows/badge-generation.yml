@@ -2,9 +2,9 @@ name: Badge Generation
 
 on:
   push:
-    branches: [ main, addBadges ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, addBadges ]
+    branches: [ main ]
 
 jobs:
   badgeTest:
@@ -26,7 +26,7 @@ jobs:
     # basically npm install but only installs from package-lock
     - run: npm ci
     - run: npm run lint
-    - run: npm run badgeTest
+    - run: npm run coverage
 
     # Only run the coverage once
     - if: ${{ matrix.node-version == '16.x' }}

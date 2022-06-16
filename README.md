@@ -71,7 +71,7 @@ Note: Utilizing a role with the *AdministratorAccess* policy is not advised, but
 
 #### Small Improvements
 
-Anyone's Small Improvement's personal access token may be used.
+Using Matt Vincent's personal access token.
 [Generate personal access token](https://resources.small-improvements.com/knowledge-base/small-improvements-rest-api/)
 
 #### Slack
