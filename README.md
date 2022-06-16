@@ -14,7 +14,7 @@ Request access from a slack admin (`@slack-admin` in `#slack-support`) to gain a
 
 This Diagram below is useful if you would like to understand the [inner workings of the lambda function](#lambda-function).
 
-![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.svg?raw=true)
+![Serverless Program Structure](https://github.com/sourceallies/small-improvements-slack-bot/blob/main/graphics/InfrastructureLayout.png?raw=true)
 
 ### SAM
 
