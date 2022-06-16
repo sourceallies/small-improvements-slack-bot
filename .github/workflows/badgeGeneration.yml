@@ -62,7 +62,7 @@ jobs:
         echo "CCOV=$(expr ${$COVERAGE::-1} + 0)" >> $GITHUB_ENV
     - if: ${{ matrix.node-version == '16.x' }}
       name: Create the Badge
-      uses: schneegans/dynamic-badges-action@v1.0.0
+      uses: schneegans/dynamic-badges-action@v1.4.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 97221ecae2df1a5eaa5c82e75570fb5a
