@@ -106,7 +106,7 @@ The *PR Check* workflow has a singular job, which ensures that the code is linte
 
 #### Badge Generation
 
-The *badge-generation* workflow runs all unit tests in order to create the coverage badge seen [at the top of this README](small-improvements-slack-bot).
+The *badge-generation* workflow runs all unit tests in order to create the coverage badge seen [at the top of this README](#small-improvements-slack-bot).
 
 ### Running Locally
 
