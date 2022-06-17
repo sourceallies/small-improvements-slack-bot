@@ -89,49 +89,6 @@ describe('index', () => {
     expect(dynamodbClient.insertRecord).not.toHaveBeenCalled();
   });
 
-  test('should not post objective status change to in progress', async () => {
-    activities.items[0].items[0].activities[0].change.newStatus = {
-      color: '#eee',
-      description: 'In Progress',
-      status: 1
-    };
-
-    secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
-    dynamodbClient.getRecord.mockResolvedValue([]);
-
-    const result = await index.handler(event);
-
-    expect(result).toBe('Finished 0 successfully. Failed 0');
-    expect(dynamodbClient.getRecord).not.toHaveBeenCalled();
-  });
-
-  test('should not post private objectives', async () => {
-    activities.items[0].items[0].activities[0].content.objective.visibility = 'PRIVATE';
-
-    secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
-    dynamodbClient.getRecord.mockResolvedValue([]);
-
-    const result = await index.handler(event);
-
-    expect(result).toBe('Finished 0 successfully. Failed 0');
-    expect(dynamodbClient.getRecord).not.toHaveBeenCalled();
-  });
-
-  test('should not post old objective changes', async () => {
-    activities.items[0].items[0].activities[0].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000) - 1;
-
-    secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
-    dynamodbClient.getRecord.mockResolvedValue([]);
-
-    const result = await index.handler(event);
-
-    expect(result).toBe('Finished 0 successfully. Failed 0');
-    expect(dynamodbClient.getRecord).not.toHaveBeenCalled();
-  });
-
   test('should post objective achieved', async () => {
     activities.items[0].items[0].activities[0].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000);
 
