@@ -28,7 +28,7 @@ jobs:
     # basically npm install but only installs from package-lock
     - run: npm ci
     - run: npm run lint
-    - run: npm coverage
+    - run: npm run coverage -- --coverageReporters='json-summary'
 
     # Only run the coverage once
     - if: ${{ matrix.node-version == '16.x' }}
