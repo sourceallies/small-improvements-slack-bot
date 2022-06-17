@@ -142,3 +142,7 @@ npm run integration
 - Slack
   - /api/chat.postMessage
   - /api/users.lookupByEmail?email=${USER_EMAIL}
+
+### Other
+
+The bot's birthday is 06-20-2022!
