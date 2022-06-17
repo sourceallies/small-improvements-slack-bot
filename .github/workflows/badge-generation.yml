@@ -38,9 +38,7 @@ jobs:
         echo "CCOV=$(echo $CCOV)" >> $GITHUB_ENV
         COVERAGE="${CCOV}%"
         echo "COVERAGE=$(echo $COVERAGE)" >> $GITHUB_ENV
-        echo $COVERAGE
-        echo $CCOV
-
+        echo "Coverage: ${COVERAGE}"
         REF=${{ github.ref }}
         IFS='/' read -ra PATHS <<< "$REF"
         BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
