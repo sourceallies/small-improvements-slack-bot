@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  badgeTest:
+  coverage-badge:
     #runs-on: "ubuntu-latest"
     runs-on: ${{ matrix.os }}
 
@@ -19,6 +19,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
     - name: Install Node 16
       uses: actions/setup-node@v3
       with:
@@ -27,6 +28,7 @@ jobs:
     # basically npm install but only installs from package-lock
     - run: npm ci
     - run: npm run lint
+    - run: npm coverage
 
     # Only run the coverage once
     - if: ${{ matrix.node-version == '16.x' }}
