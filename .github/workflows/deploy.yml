@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  deployDev: false #Disable dev until needed
+
 permissions:
   id-token: write
   contents: read
@@ -29,6 +32,7 @@ jobs:
     name: Deploy-dev
     needs: Build
     runs-on: "ubuntu-latest"
+    if: ${{ env.deployDev }}
     steps:
       - uses: actions/checkout@v3
       - name: Install Node 16
