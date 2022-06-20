@@ -49,7 +49,7 @@ jobs:
       # sam build
       - run: sam build --use-container
       # sam deploy
-      - if: env.DEPLOY_DEV
+      - if: env.DEPLOY_DEV == 'true'
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }}
 
   deploy-prod:
