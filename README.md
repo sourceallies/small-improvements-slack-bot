@@ -104,6 +104,10 @@ The *deployment* workflow has 3 jobs, each occuring only if the previous complet
 
 The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main.
 
+#### Badge Generation
+
+The *badge-generation* workflow runs all unit tests in order to create the coverage badge seen [at the top of this README](#small-improvements-slack-bot).
+
 ### Running Locally
 
 **Warning:** this can still have effects on both the dev database and Slack under the right conditions.
