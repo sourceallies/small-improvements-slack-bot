@@ -5,6 +5,7 @@ jest.mock('https');
 describe('small-improvements', () => {
   let token,
     activitiesBody,
+    userBody,
     mockEmail,
     mockSIUID;
 
@@ -13,7 +14,6 @@ describe('small-improvements', () => {
     token = 'token';
     mockEmail = 'email@email.com';
     activitiesBody = `{
-      "email": "${mockEmail}",
       "items": [
         {
           "occurredAt": 1654612581248,
@@ -93,6 +93,9 @@ describe('small-improvements', () => {
         }
       ]
     }`;
+    userBody = `{
+      "loginname": "${mockEmail}"
+    }`;
 
     httpsMock.on = jest.fn();
     httpsMock.end = jest.fn();
@@ -107,7 +110,7 @@ describe('small-improvements', () => {
     const endMock = jest.fn();
     httpsMock.request = jest.fn((postOption, requestCallBack) => {
       requestCallBack({
-        on: (data, dataCallBack) => dataCallBack(Buffer.from(activitiesBody, 'utf8')),
+        on: (data, dataCallBack) => dataCallBack(Buffer.from(userBody, 'utf8')),
         statusCode: 200
       });
       return {

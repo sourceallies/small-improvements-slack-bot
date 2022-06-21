@@ -60,7 +60,7 @@ function getEmail(SIUID, token) { // SIUID (Small Improvements User ID) is in th
         responsePayload += d;
       });
       res.on('close', () => {
-        resolve(JSON.parse(responsePayload).email);
+        resolve(JSON.parse(responsePayload).loginname);
       });
     });
     req.on('error', err => {
