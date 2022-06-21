@@ -95,7 +95,7 @@ describe('small-improvements', () => {
     }`;
     userBody = `{
       "loginname": "${mockEmail}"
-    }`
+    }`;
 
     httpsMock.on = jest.fn();
     httpsMock.end = jest.fn();
