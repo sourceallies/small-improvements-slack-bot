@@ -104,9 +104,13 @@ The *deployment* workflow has 3 jobs, each occuring only if the previous complet
 
 The *PR Check* workflow has a singular job, which ensures that the code is linted and unit tested without error before being able to merge to main.
 
-#### Badge Generation
+#### Badge Generation - Coverage Badge
 
 The *badge-generation* workflow runs all unit tests in order to create the coverage badge seen [at the top of this README](#small-improvements-slack-bot).
+
+ - The badge is created by utilizing a public GIST_SECRET, roughly following [this guide](https://dev.to/thejaredwilcurt/coverage-badge-with-github-actions-finally-59fa). 
+ - Differing from the guide above, utilizes the newest external workflow version at the time of creation, [v1.4.0](https://github.com/Schneegans/dynamic-badges-action/releases/tag/v1.4.0). Mainly to account for dynamic coloration.
+ - Also cuts down on the amount of bash scripting in the guide's workflow by utilizing python rather than bash where doing so helped.
 
 ### Running Locally
 
