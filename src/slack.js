@@ -41,9 +41,19 @@ async function slackPost(authToken, channelName, formattedMessage) { // postData
   });
 }
 
-async function formatSlackMessage(objectiveItem, newStatus, slackUID, cycleId) {
+async function formatSlackMessageForCompleted(objectiveItem, newStatus, slackUID, cycleId) {
   const toSend = messageVariables;
   toSend.text = `<@${slackUID}> has ${newStatus.toLowerCase()} their goal!\n*${objectiveItem.title}*\n`;
+  if (objectiveItem.description) {
+    toSend.text += `${formatDescription(objectiveItem.description)}\n`;
+  }
+  toSend.text += `<https://allies.small-improvements.com/app/objectives/${cycleId}/${objectiveItem.id}|Open in Small Improvements>`;
+  return toSend;// return JSON format
+}
+
+async function formatSlackMessageForCreated(objectiveItem, slackUID, cycleId) {
+  const toSend = messageVariables;
+  toSend.text = `<@${slackUID}> has created a new goal!\n*${objectiveItem.title}*\n`;
   if (objectiveItem.description) {
     toSend.text += `${formatDescription(objectiveItem.description)}\n`;
   }
@@ -119,7 +129,8 @@ function getSlackID(email, token) {
   });
 }
 
-exports.formatSlackMessage = formatSlackMessage;
+exports.formatSlackMessageForCompleted = formatSlackMessageForCompleted;
+exports.formatSlackMessageForCreated = formatSlackMessageForCreated;
 exports.formatDescription = formatDescription;
 exports.slackPost = slackPost;
 exports.getSlackID = getSlackID;

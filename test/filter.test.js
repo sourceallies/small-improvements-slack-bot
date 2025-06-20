@@ -19,13 +19,20 @@ describe('filter activities', () => {
             {
               occurredAt: 1651856682326,
               activities: [
-                dataFactory.createActivity(
+                dataFactory.createCompletedActivity(
+                  { occurredAt: new Date(eventDateString).getTime() - (60 * 1000) },
+                  { id: objectiveId }
+                ),
+                dataFactory.createCreatedActivity(
                   { occurredAt: new Date(eventDateString).getTime() - (60 * 1000) },
                   { id: objectiveId }
                 )
               ]
             }
           ]
+        },
+        {
+
         }
       ]
     };
@@ -36,7 +43,8 @@ describe('filter activities', () => {
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(1);
+    expect(result.completed).toHaveLength(1);
+    expect(result.created).toHaveLength(1);
   });
 
   test('should ignore items with no activities', () => {
@@ -46,7 +54,8 @@ describe('filter activities', () => {
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(1);
+    expect(result.completed).toHaveLength(1);
+    expect(result.created).toHaveLength(1);
   });
 
   test('should remove activity with status change to in progress', () => {
@@ -58,23 +67,28 @@ describe('filter activities', () => {
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(0);
+    expect(result.completed).toHaveLength(0);
+    expect(result.created).toHaveLength(1);
   });
 
   test('should remove private objectives', () => {
     activities.items[0].items[0].activities[0].content.objective.visibility = 'PRIVATE';
+    activities.items[0].items[0].activities[1].content.objective.visibility = 'PRIVATE';
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(0);
+    expect(result.completed).toHaveLength(0);
+    expect(result.created).toHaveLength(0);
   });
 
   test('should remove old objective changes', () => {
     activities.items[0].items[0].activities[0].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000) - 1;
+    activities.items[0].items[0].activities[1].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000) - 1;
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(0);
+    expect(result.completed).toHaveLength(0);
+    expect(result.created).toHaveLength(0);
   });
 
   test('should keep objective when most recent activity is achieved', () => {
@@ -87,7 +101,7 @@ describe('filter activities', () => {
         {
           occurredAt: 1651856682326,
           activities: [
-            dataFactory.createActivity(
+            dataFactory.createCompletedActivity(
               { occurredAt: pastTime },
               { id: objectiveId },
               {
@@ -103,7 +117,7 @@ describe('filter activities', () => {
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(1);
+    expect(result.completed).toHaveLength(1);
   });
 
   test('should remove objective when most recent activity is not achieved or partially achieved', () => {
@@ -116,7 +130,7 @@ describe('filter activities', () => {
         {
           occurredAt: 1651856682326,
           activities: [
-            dataFactory.createActivity(
+            dataFactory.createCompletedActivity(
               { occurredAt: futureTime },
               { id: objectiveId },
               {
@@ -132,6 +146,6 @@ describe('filter activities', () => {
 
     const result = filter.filterActivities(activities, new Date(eventDateString));
 
-    expect(result).toHaveLength(0);
+    expect(result.completed).toHaveLength(0);
   });
 });

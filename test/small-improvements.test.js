@@ -120,7 +120,7 @@ describe('small-improvements', () => {
       };
     });
 
-    const response = await smallImprovementsClient.getEmail(mockSIUID, token);
+    const response = await smallImprovementsClient.GetEmail(mockSIUID, token);
 
     const expectedOptions = {
       hostname: 'allies.small-improvements.com',
@@ -153,7 +153,7 @@ describe('small-improvements', () => {
       };
     });
 
-    const response = await smallImprovementsClient.getObjectives(token);
+    const response = await smallImprovementsClient.GetObjectives(token);
 
     const expectedOptions = {
       hostname: 'allies.small-improvements.com',
@@ -179,7 +179,7 @@ describe('small-improvements', () => {
 
     let actualError;
     try {
-      await smallImprovementsClient.getObjectives(token);
+      await smallImprovementsClient.GetObjectives(token);
     } catch (e) {
       actualError = e;
     }
@@ -195,7 +195,7 @@ describe('small-improvements', () => {
 
     let actualError;
     try {
-      await smallImprovementsClient.getEmail(mockEmail, token);
+      await smallImprovementsClient.GetEmail(mockEmail, token);
     } catch (e) {
       actualError = e;
     }
