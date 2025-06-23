@@ -34,7 +34,7 @@ async function main(event, context) {
           activity.change.newStatus.description,
           SIEmail
         );
-        await dynamodbClient.insertRecord(activity);
+        await dynamodbClient.insertRecord(activity, '');
         return activity.content.objective;
       }
       return undefined;
@@ -51,7 +51,7 @@ async function main(event, context) {
           activity.content,
           SIEmail
         );
-        await dynamodbClient.insertRecord(activity);
+        await dynamodbClient.insertRecord(activity, 'CREATED');
         return activity.content.objective;
       }
       return undefined;
