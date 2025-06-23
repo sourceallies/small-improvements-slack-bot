@@ -12,5 +12,5 @@ async function PostCreatedObjective(token, channelName, content, email) {
   return await slackClient.slackPost(token, channelName, formattedMessage);
 }
 
-exports.PostCompletedObjective = PostCompletedObjective
-exports.PostCreatedObjective = PostCreatedObjective
+exports.PostCompletedObjective = PostCompletedObjective;
+exports.PostCreatedObjective = PostCreatedObjective;
