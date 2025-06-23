@@ -41,25 +41,25 @@ async function main(event, context) {
     })
   );
   const createdResults = await Promise.allSettled(
-      created.map(async (activity) => {
-        const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id+"CREATED");
-        if (!exisingEntry?.length) {
-          const SIEmail = await smallImprovementsClient.GetEmail(activity.content.objective.owner.id, secrets.SIToken);
-          await slackService.PostCreatedObjective(
-              secrets.SlackToken,
-              slackChannel,
-              activity.content,
-              SIEmail
-          );
-          await dynamodbClient.insertRecord(activity);
-          return activity.content.objective;
-        }
-        return undefined;
-      })
-  )
-  const allPostResults = completedResults.concat(createdResults)
-  const successfulPosts = allPostResults.filter(x => x.value)
-  const failedPosts = allPostResults.filter(x => x.status === 'rejected')
+    created.map(async (activity) => {
+      const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id + 'CREATED');
+      if (!exisingEntry?.length) {
+        const SIEmail = await smallImprovementsClient.GetEmail(activity.content.objective.owner.id, secrets.SIToken);
+        await slackService.PostCreatedObjective(
+          secrets.SlackToken,
+          slackChannel,
+          activity.content,
+          SIEmail
+        );
+        await dynamodbClient.insertRecord(activity);
+        return activity.content.objective;
+      }
+      return undefined;
+    })
+  );
+  const allPostResults = completedResults.concat(createdResults);
+  const successfulPosts = allPostResults.filter(x => x.value);
+  const failedPosts = allPostResults.filter(x => x.status === 'rejected');
 
   failedPosts.forEach(fail => console.log(fail.reason));
   const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
