@@ -107,7 +107,9 @@ describe('index', () => {
 
     expect(result).toBe('Finished 2 successfully. Failed 0');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
-    expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
+    expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId + 'CREATED');
+    expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[0], '');
+    expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1], 'CREATED');
     expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
@@ -139,15 +141,21 @@ describe('index', () => {
 
     expect(result).toBe('Finished 2 successfully. Failed 1');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
-    expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(secondObjectiveId);
-    expect(dynamodbClient.insertRecord).not.toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
-    expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1]);
+    expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId + 'CREATED');
+    expect(dynamodbClient.insertRecord).not.toHaveBeenCalledWith(activities.items[0].items[0].activities[0], '');
+    expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1], 'CREATED');
     expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
       activities.items[0].items[0].activities[2].content,
       activities.items[0].items[0].activities[2].change.newStatus.description,
+      mockEmail
+    );
+    expect(slackClient.PostCreatedObjective).toHaveBeenCalledWith(
+      secrets.SlackToken,
+      slackChannel,
+      activities.items[0].items[0].activities[1].content,
       mockEmail
     );
   });
