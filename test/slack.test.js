@@ -55,22 +55,43 @@ describe('Slack Requests', () => {
     jest.resetAllMocks();
   });
   describe('Slack formatting', () => {
-    test('Formats messages correctly *without* description', async () => {
-      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID, mockCycleId);
+    test('Formats messages correctly *without* description for created objectives', async () => {
+      const formattedText = await slackClient.formatSlackMessageForCreated(mockObjective, mockSlackID, mockCycleId);
       expect(formattedText.text).toStrictEqual(
-        `<@${mockSlackID}> has achieved their goal!
+            `<@${mockSlackID}> has created a new goal!
 *${mockObjective.title}*
 <https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
       );
     });
 
-    test('Formats messages correctly with description', async () => {
+    test('Formats messages correctly with description for created objectives', async () => {
       const description = 'Description of objective';
       mockObjective.description = `<!--MARKUP_VERSION:v3-->${description}`;
 
-      const formattedText = await slackClient.formatSlackMessage(mockObjective, mockStatus, mockSlackID, mockCycleId);
+      const formattedText = await slackClient.formatSlackMessageForCreated(mockObjective, mockSlackID, mockCycleId);
       expect(formattedText.text).toStrictEqual(
-        `<@${mockSlackID}> has achieved their goal!
+            `<@${mockSlackID}> has created a new goal!
+*${mockObjective.title}*
+${description}
+<https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
+      );
+    });
+    test('Formats messages correctly *without* description for completed objectives', async () => {
+      const formattedText = await slackClient.formatSlackMessageForCompleted(mockObjective, mockStatus, mockSlackID, mockCycleId);
+      expect(formattedText.text).toStrictEqual(
+            `<@${mockSlackID}> has achieved their goal!
+*${mockObjective.title}*
+<https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`
+      );
+    });
+
+    test('Formats messages correctly with description for completed objectives', async () => {
+      const description = 'Description of objective';
+      mockObjective.description = `<!--MARKUP_VERSION:v3-->${description}`;
+
+      const formattedText = await slackClient.formatSlackMessageForCompleted(mockObjective, mockStatus, mockSlackID, mockCycleId);
+      expect(formattedText.text).toStrictEqual(
+            `<@${mockSlackID}> has achieved their goal!
 *${mockObjective.title}*
 ${description}
 <https://allies.small-improvements.com/app/objectives/${mockCycleId}/${mockObjective.id}|Open in Small Improvements>`

@@ -53,7 +53,11 @@ describe('index', () => {
             {
               occurredAt: 1651856682326,
               activities: [
-                dataFactory.createActivity(
+                dataFactory.createCompletedActivity(
+                  { occurredAt: activityDateMillis },
+                  { id: objectiveId }
+                ),
+                dataFactory.createCreatedActivity(
                   { occurredAt: activityDateMillis },
                   { id: objectiveId }
                 )
@@ -79,7 +83,7 @@ describe('index', () => {
 
   test('should not post previously existing objective', async () => {
     secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.GetObjectives.mockResolvedValue(activities);
     dynamodbClient.getRecord.mockResolvedValue(dynamoRecords);
 
     const result = await index.handler(event);
@@ -93,18 +97,18 @@ describe('index', () => {
     activities.items[0].items[0].activities[0].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000);
 
     secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
-    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
+    smallImprovementsClient.GetObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.GetEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
     dynamodbClient.insertRecord.mockResolvedValue({});
-    slackClient.postObjective.mockResolvedValue({});
+    slackClient.PostCompletedObjective.mockResolvedValue({});
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished 1 successfully. Failed 0');
+    expect(result).toBe('Finished 2 successfully. Failed 0');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
-    expect(slackClient.postObjective).toHaveBeenCalledWith(
+    expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
       activities.items[0].items[0].activities[0].content,
@@ -117,32 +121,33 @@ describe('index', () => {
     const secondObjectiveId = 'second-objective-id';
 
     activities.items[0].items[0].activities[0].occurredAt = new Date(eventDateString).getTime() - (3 * 24 * 60 * 60 * 1000);
-    activities.items[0].items[0].activities.push(dataFactory.createActivity(
+    activities.items[0].items[0].activities.push(dataFactory.createCompletedActivity(
       { occurredAt: new Date(eventDateString).getTime() },
       { id: secondObjectiveId }
     ));
 
     secretsClient.getSecret.mockResolvedValue(secrets);
-    smallImprovementsClient.getObjectives.mockResolvedValue(activities);
-    smallImprovementsClient.getEmail.mockResolvedValue(mockEmail);
+    smallImprovementsClient.GetObjectives.mockResolvedValue(activities);
+    smallImprovementsClient.GetEmail.mockResolvedValue(mockEmail);
     dynamodbClient.getRecord.mockResolvedValue([]);
-    slackClient.postObjective
+    slackClient.PostCompletedObjective
       .mockRejectedValueOnce(new Error('failed to post to slack'))
       .mockResolvedValue({});
     dynamodbClient.insertRecord.mockResolvedValue({});
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished 1 successfully. Failed 1');
+    expect(result).toBe('Finished 2 successfully. Failed 1');
+    expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(secondObjectiveId);
     expect(dynamodbClient.insertRecord).not.toHaveBeenCalledWith(activities.items[0].items[0].activities[0]);
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1]);
-    expect(slackClient.postObjective).toHaveBeenCalledWith(
+    expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
       slackChannel,
-      activities.items[0].items[0].activities[1].content,
-      activities.items[0].items[0].activities[1].change.newStatus.description,
+      activities.items[0].items[0].activities[2].content,
+      activities.items[0].items[0].activities[2].change.newStatus.description,
       mockEmail
     );
   });
