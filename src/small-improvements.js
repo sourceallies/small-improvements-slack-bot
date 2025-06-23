@@ -70,5 +70,5 @@ function getEmail(SIUID, token) { // SIUID (Small Improvements User ID) is in th
   });
 }
 
-exports.GetObjectives = getObjectives;
-exports.GetEmail = getEmail;
+exports.getObjectives = getObjectives;
+exports.getEmail = getEmail;

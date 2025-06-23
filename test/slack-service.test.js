@@ -2,7 +2,7 @@ const postClient = require('../src/slack-service');
 const slackClient = require('../src/slack');
 jest.mock('../src/slack');
 
-describe('PostObjective', () => {
+describe('postObjective', () => {
   let token,
     channelID,
     responseBody,
@@ -51,10 +51,10 @@ describe('PostObjective', () => {
     jest.resetAllMocks();
   });
 
-  test('PostObjective for created', async () => {
+  test('postObjective', async () => {
     const mockFormattedMessage = {};
     slackClient.getSlackID.mockResolvedValue(mockSlackID);
-    slackClient.formatSlackMessageForCreated.mockResolvedValue(mockFormattedMessage);
+    slackClient.formatSlackMessage.mockResolvedValue(mockFormattedMessage);
     slackClient.slackPost.mockResolvedValue(responseBody);
     const mockContent = {
       cycle: {
@@ -63,28 +63,10 @@ describe('PostObjective', () => {
       objective: mockObjective
     };
 
-    const response = await postClient.PostCreatedObjective(token, channelID, mockContent, mockEmail);
+    const response = await postClient.postObjective(token, channelID, mockContent, mockStatus, mockEmail);
     expect(response).toStrictEqual(responseBody);
     expect(slackClient.getSlackID).toHaveBeenCalledWith(mockEmail, token);
-    expect(slackClient.formatSlackMessageForCreated).toHaveBeenCalledWith(mockObjective, mockSlackID, mockObjectiveCycleId);
-    expect(slackClient.slackPost).toHaveBeenCalledWith(token, channelID, mockFormattedMessage);
-  });
-  test('PostObjective for completed', async () => {
-    const mockFormattedMessage = {};
-    slackClient.getSlackID.mockResolvedValue(mockSlackID);
-    slackClient.formatSlackMessageForCompleted.mockResolvedValue(mockFormattedMessage);
-    slackClient.slackPost.mockResolvedValue(responseBody);
-    const mockContent = {
-      cycle: {
-        id: mockObjectiveCycleId
-      },
-      objective: mockObjective
-    };
-
-    const response = await postClient.PostCompletedObjective(token, channelID, mockContent, mockStatus, mockEmail);
-    expect(response).toStrictEqual(responseBody);
-    expect(slackClient.getSlackID).toHaveBeenCalledWith(mockEmail, token);
-    expect(slackClient.formatSlackMessageForCompleted).toHaveBeenCalledWith(mockObjective, mockStatus, mockSlackID, mockObjectiveCycleId);
+    expect(slackClient.formatSlackMessage).toHaveBeenCalledWith(mockObjective, mockStatus, mockSlackID, mockObjectiveCycleId);
     expect(slackClient.slackPost).toHaveBeenCalledWith(token, channelID, mockFormattedMessage);
   });
 });
