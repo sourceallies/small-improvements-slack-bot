@@ -4,7 +4,7 @@ const defaultNewStatus = {
   status: 100
 };
 
-exports.createCompletedActivity = (activityProps, objectiveProps, newStatus = defaultNewStatus) => {
+exports.createActivity = (activityProps, objectiveProps, newStatus = defaultNewStatus) => {
   return {
     actor: {
       firstName: 'Developer'
@@ -39,45 +39,6 @@ exports.createCompletedActivity = (activityProps, objectiveProps, newStatus = de
         owner: {
           firstName: 'Developer',
           id: 'V*jArA9pQbaK0U7grc9frw',
-          email: 'rappling@sourceallies.com'
-        },
-        visibility: 'PUBLIC',
-        visibleTo: [],
-        ...objectiveProps
-      }
-    },
-    ...activityProps
-  };
-};
-
-exports.createCreatedActivity = (activityProps, objectiveProps) => {
-  return {
-    actor: {
-      firstName: 'Developer'
-    },
-    occurredAt: 1651856682326,
-    change: {},
-    id: 'w02bdXSdzFNre*n3plJQgQ',
-    type: 'OBJECTIVE_CREATED',
-    targets: [
-      {
-        firstName: 'Developer'
-      }
-    ],
-    content: {
-      cycle: {
-        id: 'E0hlMiEuRi7T7Md8PWyQuQ',
-        name: 'Objective Cycle 2022'
-      },
-      objective: {
-        id: 'w02bdXSdzFNre*n3plJQll',
-        icon: 'o_3goldstars',
-        title: 'Objective Title',
-        description: '<!--MARKUP_VERSION:v3--><p>Description</p>',
-        dueDate: '2022-06-30T05:00:00.000Z',
-        owner: {
-          firstName: 'Developer',
-          id: 'V*jArA9pQbaK0U7grc9Qrw',
           email: 'rappling@sourceallies.com'
         },
         visibility: 'PUBLIC',

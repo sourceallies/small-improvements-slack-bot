@@ -3,9 +3,9 @@ const index = require('../src/index');
 describe('integration', () => {
   const event = {
     time: '2022-06-16T00:00:00Z'
-  };
+  }
 
   test('process event', async () => {
-    await index.handler(event);
-  });
-});
+    const result = await index.handler(event);
+  })
+})
