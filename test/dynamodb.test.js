@@ -90,7 +90,7 @@ describe('dynamodb', () => {
       });
       putItemPromise.mockResolvedValue({});
 
-      const result = await dynamodbClient.insertRecord(activity);
+      const result = await dynamodbClient.insertRecord(activity, '');
 
       expect(result).toStrictEqual({});
       expect(mockPutItem).toBeCalledWith({

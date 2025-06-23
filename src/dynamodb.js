@@ -21,12 +21,12 @@ async function getRecord(key) {
   return response.Items;
 }
 
-function insertRecord(activity) {
+function insertRecord(activity, postfix) {
   const timeToLive = activity.occurredAt / 1000 + sevenDaysInSeconds;
   const params = {
     TableName: tableName,
     Item: {
-      ID: { S: activity.content.objective.id },
+      ID: { S: activity.content.objective.id + postfix },
       TIMESTAMP: { N: activity.occurredAt.toString() },
       TTL: { N: timeToLive.toString() }
     }
