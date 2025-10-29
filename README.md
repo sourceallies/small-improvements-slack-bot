@@ -29,16 +29,16 @@ An Event that is triggered by a rule deployed and updated automatically by [SAM]
 Serves as the main hub of this stack, deployed and updated automatically by [SAM](#sam). 
 
 - Triggered by a CloudWatch Event, which is passed into its main function.
-- Assigns its Slack Channel name via Environment variables passed in by SAM.
+- Assigns its Slack Channel ID via Environment variables passed in by SAM.
 - Uses the SecretsManager to get both the Slack and Small Improvements tokens.
 - Gets all objectives using the Small Improvements API token.
 - Filters the objectives such that only those of a specific type, status, visibility, and time are left.
 - Log the number of objectives found.
-- For each of those objectives,the database is checked to see if it has an object with the same ID (returns a promise).
+- For each of those objectives, the database is checked to see if it has an object with the same ID (returns a promise).
   - If the objective was in the database, return undefined, there is nothing left to do for this objective.
   - If the objective was not in the database, it will try to post to Slack, which requires the following:
     - Try to get SlackID via the email address in the Small Improvements Objective.
-    - Format the slack message using the objective, its status, and the SlackID.
+    - Format the Slack message using the objective, its status, and the SlackID.
     - Try to send the message (if successful, resolves to the body of the HTTP response).
     - Try to insert the record of the objective into the database.
 - Finally, after all of the promises created from those objectives resolve, the data on number of successful and unsuccessful posts is logged and returned.

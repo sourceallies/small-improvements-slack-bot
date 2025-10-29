@@ -17,7 +17,7 @@ describe('index', () => {
     activities,
     dynamoRecords,
     objectiveId,
-    slackChannel,
+    slackChannelId,
     mockEmail;
 
   afterEach(() => {
@@ -25,8 +25,8 @@ describe('index', () => {
   });
 
   beforeEach(() => {
-    slackChannel = 'si-sandbox';
-    process.env.SlackChannel = slackChannel;
+    slackChannelId = 'si-sandbox';
+    process.env.SlackChannelId = slackChannelId;
 
     eventDateString = '2022-06-02T00:00:00Z';
     event = {
@@ -112,7 +112,7 @@ describe('index', () => {
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1], 'CREATED');
     expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
-      slackChannel,
+      slackChannelId,
       activities.items[0].items[0].activities[0].content,
       activities.items[0].items[0].activities[0].change.newStatus.description,
       mockEmail
@@ -147,14 +147,14 @@ describe('index', () => {
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[1], 'CREATED');
     expect(slackClient.PostCompletedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
-      slackChannel,
+      slackChannelId,
       activities.items[0].items[0].activities[2].content,
       activities.items[0].items[0].activities[2].change.newStatus.description,
       mockEmail
     );
     expect(slackClient.PostCreatedObjective).toHaveBeenCalledWith(
       secrets.SlackToken,
-      slackChannel,
+      slackChannelId,
       activities.items[0].items[0].activities[1].content,
       mockEmail
     );
