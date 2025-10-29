@@ -17,7 +17,7 @@ async function main(event, context) {
         Post message to Slack
         Put record in dynamodb
   */
-  const slackChannelId = process.env.SlackChannelId;
+  const slackChannel = process.env.SlackChannel;
   const secrets = await secretsClient.getSecret();
   const objectiveActivities = await smallImprovementsClient.GetObjectives(secrets.SIToken);
   const { completed, created } = filter.filterActivities(objectiveActivities, new Date(event.time));
@@ -29,7 +29,7 @@ async function main(event, context) {
         const SIEmail = await smallImprovementsClient.GetEmail(activity.content.objective.owner.id, secrets.SIToken);
         await slackService.PostCompletedObjective(
           secrets.SlackToken,
-          slackChannelId,
+          slackChannel,
           activity.content,
           activity.change.newStatus.description,
           SIEmail
@@ -47,7 +47,7 @@ async function main(event, context) {
         const SIEmail = await smallImprovementsClient.GetEmail(activity.content.objective.owner.id, secrets.SIToken);
         await slackService.PostCreatedObjective(
           secrets.SlackToken,
-          slackChannelId,
+          slackChannel,
           activity.content,
           SIEmail
         );

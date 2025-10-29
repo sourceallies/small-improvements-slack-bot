@@ -10,9 +10,9 @@ Parameters:
     Type: String
     Description: The slack token
     NoEcho: true
-  SlackChannelId:
+  SlackChannel:
     Type: String
-    Description: The id of the slack channel to post messages to
+    Description: The name of the slack channel to post messages to
     Default: si-sandbox
   ScheduleEnabled:
     Type: String
@@ -37,7 +37,7 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
-          SlackChannelId: !Ref SlackChannelId
+          SlackChannel: !Ref SlackChannel
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DynamoTable

@@ -4,8 +4,8 @@ const messageVariables = {
 };
 
 // Post a message to a channel your app is in using ID and message text
-async function slackPost(authToken, channelId, formattedMessage) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
-  formattedMessage.channel = '' + channelId;
+async function slackPost(authToken, channelName, formattedMessage) { // postData should be JSON, e.g. { channel:"#channel", text:'message' }
+  formattedMessage.channel = '' + channelName;
 
   const options = {
     hostname: 'sourceallies.slack.com',
