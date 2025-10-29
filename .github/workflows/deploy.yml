@@ -69,4 +69,4 @@ jobs:
       # sam build
       - run: sam build --use-container
       # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }} SlackChannelId=CF4U95FN0 ScheduleEnabled=true
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides SlackTokenSecret=${{ secrets.SLACKTOKEN }} SmallImprovementsTokenSecret=${{ secrets.SITOKEN }} SlackChannel=goals ScheduleEnabled=true
