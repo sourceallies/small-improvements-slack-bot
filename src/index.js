@@ -58,11 +58,13 @@ async function main(event, context) {
     })
   );
   const allPostResults = completedResults.concat(createdResults);
-  const successfulPosts = allPostResults.filter(x => x.value);
   const failedPosts = allPostResults.filter(x => x.status === 'rejected');
+  const nonErrorPosts = allPostResults.filter(x => x.status === 'fulfilled');
+  const successfulPosts = nonErrorPosts.filter(x => x.value !== undefined);
+  const skippedPosts = nonErrorPosts.filter(x => x.value === undefined);
 
   failedPosts.forEach(fail => console.log(fail.reason));
-  const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
+  const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}. ${skippedPosts.length} already existed (skipped)`;
   console.log(message);
   return message;
 }
