@@ -24,7 +24,7 @@ function getObjectives(token) {
       res.on('data', d => {
         responsePayload += d;
       });
-      res.on('close', () => {
+      res.on('end', () => {
         resolve(JSON.parse(responsePayload));
       });
     });
@@ -54,12 +54,11 @@ function getEmail(SIUID, token) { // SIUID (Small Improvements User ID) is in th
       if (res.statusCode !== 200) {
         console.log(`status logged ${res.statusCode}`);
         reject(new Error(`Could not get email: ${res.statusCode}`));
-        return;
       }
       res.on('data', d => {
         responsePayload += d;
       });
-      res.on('close', () => {
+      res.on('end', () => {
         resolve(JSON.parse(responsePayload).loginname);
       });
     });

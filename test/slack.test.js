@@ -24,24 +24,24 @@ describe('Slack Requests', () => {
     mockSlackID = 'Reece';
     mockCycleId = 'CycleId';
     responseBody = `{
-      ok: true,
-      channel: 'C0179PL5K8E',
-      ts: '1595354927.001300',
-      message: {
-        bot_id: 'B017GED1UEN',
-        type: 'message',
-        text: 'Hello, World!',
-        user: 'U0171MZ51E3',
-        ts: '1595354927.001300',
-        team: 'T2CA1AURM',
-        bot_profile: {
-          id: 'B017GED1UEN',
-          deleted: false,
-          name: 'My Test App',
-          updated: 1595353545,
-          app_id: 'A017NKGAKHA',
-          icons: [Object],
-          team_id: 'T2CA1AURM'
+      "ok": true,
+      "channel": "C0179PL5K8E",
+      "ts": "1595354927.001300",
+      "message": {
+        "bot_id": "B017GED1UEN",
+        "type": "message",
+        "text": "Hello, World!",
+        "user": "U0171MZ51E3",
+        "ts": "1595354927.001300",
+        "team": "T2CA1AURM",
+        "bot_profile": {
+          "id": "B017GED1UEN",
+          "deleted": false,
+          "name": "My Test App",
+          "updated": 1595353545,
+          "app_id": "A017NKGAKHA",
+          "icons": [],
+          "team_id": "T2CA1AURM"
         }
       }
     }`;
