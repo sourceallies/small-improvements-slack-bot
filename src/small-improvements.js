@@ -24,7 +24,7 @@ function getObjectives(token) {
       res.on('data', d => {
         responsePayload += d;
       });
-      res.on('end', () => { // TODO: was close
+      res.on('end', () => {
         resolve(JSON.parse(responsePayload));
       });
     });

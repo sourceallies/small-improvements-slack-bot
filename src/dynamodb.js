@@ -17,6 +17,7 @@ async function getRecord(key) {
   };
 
   const response = await dbClient.query(params).promise();
+
   return response.Items;
 }
 
