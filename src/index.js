@@ -21,7 +21,7 @@ async function main(event, context) {
   const secrets = await secretsClient.getSecret();
   const objectiveActivities = await smallImprovementsClient.GetObjectives(secrets.SIToken);
   const { completed, created } = filter.filterActivities(objectiveActivities, new Date(event.time));
-  console.log(`Found ${completed.length} recently completed and ${created.length} recently created objectives.`);
+  console.log(`Found ${completed.length} recently completed and ${created.length} recently created public objectives.`);
   const completedResults = await Promise.allSettled(
     completed.map(async (activity) => {
       const exisingEntry = await dynamodbClient.getRecord(activity.content.objective.id);
@@ -35,9 +35,9 @@ async function main(event, context) {
           SIEmail
         );
         await dynamodbClient.insertRecord(activity, '');
-        return activity.content.objective;
+        return true;
       }
-      return undefined;
+      return false;
     })
   );
   const createdResults = await Promise.allSettled(
@@ -52,17 +52,18 @@ async function main(event, context) {
           SIEmail
         );
         await dynamodbClient.insertRecord(activity, 'CREATED');
-        return activity.content.objective;
+        return true;
       }
-      return undefined;
+      return false;
     })
   );
   const allPostResults = completedResults.concat(createdResults);
   const successfulPosts = allPostResults.filter(x => x.value);
+  const skippedPosts = allPostResults.filter(x => x.status === 'fulfilled' && !x.value);
   const failedPosts = allPostResults.filter(x => x.status === 'rejected');
 
   failedPosts.forEach(fail => console.log(fail.reason));
-  const message = `Finished ${successfulPosts.length} successfully. Failed ${failedPosts.length}`;
+  const message = `Posted ${successfulPosts.length}. Skipped ${skippedPosts.length}. Failed ${failedPosts.length}`;
   console.log(message);
   return message;
 }

@@ -88,7 +88,7 @@ describe('index', () => {
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished 0 successfully. Failed 0');
+    expect(result).toBe('Posted 0. Skipped 2. Failed 0');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.insertRecord).not.toHaveBeenCalled();
   });
@@ -105,7 +105,7 @@ describe('index', () => {
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished 2 successfully. Failed 0');
+    expect(result).toBe('Posted 2. Skipped 0. Failed 0');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId + 'CREATED');
     expect(dynamodbClient.insertRecord).toHaveBeenCalledWith(activities.items[0].items[0].activities[0], '');
@@ -139,7 +139,7 @@ describe('index', () => {
 
     const result = await index.handler(event);
 
-    expect(result).toBe('Finished 2 successfully. Failed 1');
+    expect(result).toBe('Posted 2. Skipped 0. Failed 1');
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(secondObjectiveId);
     expect(dynamodbClient.getRecord).toHaveBeenCalledWith(objectiveId + 'CREATED');
