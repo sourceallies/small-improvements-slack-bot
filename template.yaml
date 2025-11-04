@@ -31,9 +31,9 @@ Resources:
   SmallImprovementsBotLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: .
       Handler: index.handler
-      Runtime: nodejs16.x
+      Runtime: nodejs22.x
       Timeout: 300
       Environment:
         Variables:

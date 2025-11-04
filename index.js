@@ -1,10 +1,10 @@
 'use strict';
 
-const secretsClient = require('./secrets');
-const smallImprovementsClient = require('./small-improvements');
-const dynamodbClient = require('./dynamodb');
-const slackService = require('./slack-service');
-const filter = require('./filter');
+const secretsClient = require('./src/secrets');
+const smallImprovementsClient = require('./src/small-improvements');
+const dynamodbClient = require('./src/dynamodb');
+const slackService = require('./src/slack-service');
+const filter = require('./src/filter');
 
 async function main(event, context) {
   /*
