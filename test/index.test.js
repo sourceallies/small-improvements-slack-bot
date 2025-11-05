@@ -1,4 +1,4 @@
-const index = require('../src/index');
+const index = require('../index');
 const secretsClient = require('../src/secrets');
 const smallImprovementsClient = require('../src/small-improvements');
 const dynamodbClient = require('../src/dynamodb');

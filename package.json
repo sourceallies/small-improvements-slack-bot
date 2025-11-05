@@ -2,7 +2,7 @@
   "name": "small-improvements-slack-bot",
   "version": "1.0.0",
   "description": "Slack bot for integration with Small Improvements API",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "fixlint": "eslint --fix src/*.js test/*.js",
     "lint": "eslint src/*.js test/*.js",
